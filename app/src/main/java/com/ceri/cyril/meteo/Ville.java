@@ -13,6 +13,16 @@ public class Ville {
 
     }
 
+    public String getNomVille()
+    {
+        return mNomVille;
+    }
+
+    public String getPays()
+    {
+        return mPays;
+    }
+
     public Ville( String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature )
     {
         configVille( nomVille, mPays, dateDernierReleve, vitesseVent, directionVent, pressionAtmos, temperature );

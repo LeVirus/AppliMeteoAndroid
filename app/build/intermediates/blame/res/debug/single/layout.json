@@ -144,6 +144,10 @@
         "source": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/design/24.2.1/res/layout/design_navigation_item.xml"
     },
     {
+        "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/activity_main.xml",
+        "source": "/home/cyril/AndroidStudioProjects/Meteo/app/src/main/res/layout/activity_main.xml"
+    },
+    {
         "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/abc_screen_simple_overlay_action_mode.xml",
         "source": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_screen_simple_overlay_action_mode.xml"
     },
@@ -190,10 +194,6 @@
     {
         "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/abc_list_menu_item_radio.xml",
         "source": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_list_menu_item_radio.xml"
-    },
-    {
-        "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/activity_scrolling.xml",
-        "source": "/home/cyril/AndroidStudioProjects/Meteo/app/src/main/res/layout/activity_scrolling.xml"
     },
     {
         "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
