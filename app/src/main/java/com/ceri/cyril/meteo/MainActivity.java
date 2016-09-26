@@ -1,5 +1,6 @@
 package com.ceri.cyril.meteo;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     ArrayList< Ville > mTabVille;
     ListView listeVille = null;
+    MainActivity mRefMainAct = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         entrerValDefaut();
         initialiserVueListeVille();
+        mRefMainAct = this;
     }
 
     /**
@@ -43,6 +46,14 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // When clicked, show a toast with the TextView text
+
+                Intent myIntent = new Intent(mRefMainAct, CityView.class);
+                myIntent.putExtra("Ville", mTabVille);
+                myIntent.putExtra("int", position);
+                startActivity(myIntent);
+
+                //startActivity(new Intent(MainActivity.this, CityView.class));
+
                 Toast.makeText(getApplicationContext(),
                         ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
             }
