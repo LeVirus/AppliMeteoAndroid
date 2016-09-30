@@ -25,7 +25,7 @@ public class Ville {
 
     public Ville( String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature )
     {
-        configVille( nomVille, mPays, dateDernierReleve, vitesseVent, directionVent, pressionAtmos, temperature );
+        configVille( nomVille, pays, dateDernierReleve, vitesseVent, directionVent, pressionAtmos, temperature );
     }
 
     public void configVille( String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature )
@@ -37,5 +37,10 @@ public class Ville {
         mPressionAtmos = pressionAtmos;
         mDateDernierReleve = dateDernierReleve;
         mTemperature = temperature;
+    }
+
+    public void afficherVille()
+    {
+        System.out.print( "  \n" + mNomVille + "  \n" + mPays + "  \n");
     }
 }

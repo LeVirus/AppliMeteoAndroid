@@ -132,6 +132,10 @@
         "source": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_action_menu_item_layout.xml"
     },
     {
+        "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/activity_city_view.xml",
+        "source": "/home/cyril/AndroidStudioProjects/Meteo/app/src/main/res/layout/activity_city_view.xml"
+    },
+    {
         "merged": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/res/merged/debug/layout/design_navigation_menu.xml",
         "source": "/home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/design/24.2.1/res/layout/design_navigation_menu.xml"
     },
