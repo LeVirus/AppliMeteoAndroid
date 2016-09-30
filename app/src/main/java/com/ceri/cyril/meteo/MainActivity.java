@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity
     MainActivity mRefMainAct = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         entrerValDefaut();
@@ -64,14 +65,15 @@ public class MainActivity extends AppCompatActivity
             try{
 
                 // Create ArrayAdapter using the planet list.
-                listAdapter = new ArrayAdapter<String>(this, R.layout.activity_main, R.id.listView , strTab);
+                listAdapter = new ArrayAdapter<String>(this, R.layout.activity_main, R.id.debug , strTab);
 
                 // Set the ArrayAdapter as the ListView's adapter.
                 listeVille.setAdapter( listAdapter );
 
                 //listeVille.addView( tv );
 
-            }catch (Exception e){
+            }catch (Exception e)
+            {
 System.out.print( e.toString() );
             }
 
