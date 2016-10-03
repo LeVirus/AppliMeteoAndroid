@@ -1,6 +1,8 @@
 package com.ceri.cyril.meteo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +12,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements Serializable
 {
+    int villeSelect = -1;
     ArrayList< Ville > mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
@@ -64,7 +68,6 @@ public class MainActivity extends AppCompatActivity
         }
             try{
 
-                // Create ArrayAdapter using the planet list.
                 listAdapter = new ArrayAdapter<String>(this, R.layout.activity_main, R.id.debug , strTab);
 
                 // Set the ArrayAdapter as the ListView's adapter.
@@ -91,22 +94,40 @@ System.out.print( e.toString() );
                 // When clicked, show a toast with the TextView text
 
                 Intent myIntent = new Intent(mRefMainAct, CityView.class);
-                myIntent.putExtra("Ville", mTabVille);
-                myIntent.putExtra("int", position);
+                myIntent.putExtra("ville", mTabVille.get(position));
+                //myIntent.putExtra("int", position);
                 try
                 {
+                    villeSelect = position;
+                    System.out.print("startAct\n");
                     startActivity( myIntent );
-                }catch (Exception e)
-                {
-                    System.out.print( e.toString() );
-                }
+
 
                 //startActivity(new Intent(MainActivity.this, CityView.class));
 
                 Toast.makeText(getApplicationContext(),
                         ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+
+                }catch (Exception e)
+                {
+                    System.out.print( e.toString() );
+                }
             }
         });
+    }
+
+    /**
+     * Fonction envoyant la ville dont la position est envoyé en paramètre.
+     * @param positionVille La position(dans le tableau) de la ville à récupérer.
+     * @return Une référence de la ville ou NULL en cas de paramètre éroné.
+     */
+    final Ville getConstVille( int positionVille )
+    {
+        if( positionVille < 0 || positionVille > mTabVille.size() )
+        {
+            return null;
+        }
+        return mTabVille.get( positionVille );
     }
 
 }

@@ -1,9 +1,11 @@
 package com.ceri.cyril.meteo;
 
+import java.io.Serializable;
+
 /**
  * Created by cyril on 25/09/16.
  */
-public class Ville {
+public class Ville implements Serializable{
     private String mNomVille, mPays;
     private int mVitesseVent, mDirectionVent, mPressionAtmos, mDateDernierReleve;
     private float mTemperature;
@@ -13,12 +15,12 @@ public class Ville {
 
     }
 
-    public String getNomVille()
+    public final String getNomVille()
     {
         return mNomVille;
     }
 
-    public String getPays()
+    public final String getPays()
     {
         return mPays;
     }
@@ -39,7 +41,7 @@ public class Ville {
         mTemperature = temperature;
     }
 
-    public void afficherVille()
+    public final void afficherVille()
     {
         System.out.print( "  \n" + mNomVille + "  \n" + mPays + "  \n");
     }
