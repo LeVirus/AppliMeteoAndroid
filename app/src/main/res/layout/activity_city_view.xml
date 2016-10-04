@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#FF0039CD"
     tools:context="com.ceri.cyril.meteo.CityView">
 
     <TextView
@@ -16,6 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/ville"
         android:layout_alignParentTop="true" />
+
 
     <TextView
         android:text="TextView"
@@ -26,4 +28,49 @@
         android:layout_alignStart="@+id/ville"
         android:layout_marginTop="21dp"
         android:id="@+id/pays" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/pays"
+        android:id="@+id/separator"/>
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/pays"
+        android:layout_below="@+id/separator"
+        android:layout_marginTop="21dp"
+        android:id="@+id/Vent" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/pays"
+        android:layout_below="@+id/Vent"
+        android:layout_marginTop="21dp"
+        android:id="@+id/Temperature" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/pays"
+        android:layout_below="@+id/Temperature"
+        android:layout_marginTop="21dp"
+        android:id="@+id/Pression" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/pays"
+        android:layout_below="@+id/Pression"
+        android:layout_marginTop="21dp"
+        android:id="@+id/Date" />
+
 </RelativeLayout>

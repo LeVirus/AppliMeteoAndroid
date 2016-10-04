@@ -7,8 +7,8 @@ import android.widget.TextView;
 public class CityView extends AppCompatActivity {
 
     Ville ville;
-    TextView tvVille;
-    TextView tvPays;
+    TextView tvVille, tvPays, tvVent, tvTemperature, tvPression, tvDate;
+    //TextView ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,15 @@ public class CityView extends AppCompatActivity {
     {
         tvVille = (TextView) findViewById( R.id.ville );
         tvPays = (TextView) findViewById( R.id.pays );
+        tvVent = (TextView) findViewById( R.id.Vent );
+        tvTemperature = (TextView) findViewById( R.id.Temperature );
+        tvPression = (TextView) findViewById( R.id.Pression );
+        tvDate = (TextView) findViewById( R.id.Date );
     }
 
+    /**
+     * Récupération des données émises à la création de l'activité.
+     */
     void recupBundle()
     {
         Bundle extras = getIntent().getExtras();
@@ -43,7 +50,12 @@ public class CityView extends AppCompatActivity {
     void ecrireInfoVille()
     {
         if( ville == null )return;
-        tvVille.setText( ville.getNomVille() );
-        tvPays.setText( ville.getPays() );
+        tvVille.setText( "Ville     " + ville.getNomVille() );
+        tvPays.setText( "Pays     " + ville.getPays() );
+        tvVent.setText( "Vent     "  );//à compléter
+        tvTemperature.setText( "Temperature     "  );//à compléter
+        tvPression.setText( "Pression     "  );//à compléter
+        tvDate.setText( "Date     "  );//à compléter
+
     }
 }
