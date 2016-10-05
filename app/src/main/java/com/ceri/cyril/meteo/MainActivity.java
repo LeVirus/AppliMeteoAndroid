@@ -1,10 +1,13 @@
 package com.ceri.cyril.meteo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,10 +22,11 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements Serializable
 {
-    int villeSelect = -1;
+    int villeSelect = -1, itemToDelete = -1;
     ArrayList< Ville > mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
+    ArrayAdapter<String> listAdapter ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,6 +36,29 @@ public class MainActivity extends AppCompatActivity implements Serializable
         entrerValDefaut();
         initialiserVueListeVille();
         mRefMainAct = this;
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Meteo");
+        menu.add(0, v.getId(), 0, "Supprimer élément");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "Supprimer élément") {
+            listAdapter.remove( listAdapter.getItem( itemToDelete ) );
+            listAdapter.notifyDataSetChanged();
+            mTabVille.remove( itemToDelete );
+            Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
+        }
+        else {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -55,9 +82,9 @@ public class MainActivity extends AppCompatActivity implements Serializable
      */
     void initialiserVueListeVille()
     {
-        ArrayAdapter<String> listAdapter ;
         //Récupération de la ListView
         listeVille = (ListView) findViewById(R.id.listView);
+        registerForContextMenu( listeVille );
         ArrayList< String > strTab = new ArrayList< String >();
         //Ajouter les villes graphiquement
         for( Ville a : mTabVille ) {
@@ -68,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
         }
             try{
 
-                listAdapter = new ArrayAdapter<String>(this, R.layout.activity_main, R.id.debug , strTab);
+                listAdapter = new ArrayAdapter<String>( this, R.layout.activity_main, R.id.debug , strTab );
 
                 // Set the ArrayAdapter as the ListView's adapter.
                 listeVille.setAdapter( listAdapter );
@@ -81,6 +108,7 @@ System.out.print( e.toString() );
             }
 
         initClickListenerListeView();
+        initLongClickListenerListeView();
     }
 
     /**
@@ -114,6 +142,34 @@ System.out.print( e.toString() );
                 }
             }
         });
+
+    }
+
+
+
+    void initLongClickListenerListeView()
+    {
+        listeVille.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id)
+            {
+                setItemToDelete( pos );
+                mRefMainAct.openContextMenu( arg0 );
+
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Fonction appelée aprés un long click sur un élément de la ListView.
+     * Mémorisation de la position de l'objet à supprimer dans la ListView.
+     * @param i Position de l'élément.
+     */
+    void setItemToDelete( int i )
+    {
+        itemToDelete = i;
     }
 
     /**
