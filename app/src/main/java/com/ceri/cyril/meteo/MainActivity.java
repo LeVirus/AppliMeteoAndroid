@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,19 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+/**
+ * protected void onCreate(Bundle savedInstanceState)
+ * public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+ * public boolean onContextItemSelected(MenuItem item)
+ * void entrerValDefaut()
+ * void initialiserVueListeVille()
+ * void initClickListenerListeView()
+ * void initLongClickListenerListeView()
+ * void setItemToDelete( int i )
+ * final Ville getConstVille( int positionVille )
+ */
+
 public class MainActivity extends AppCompatActivity implements Serializable
 {
     int villeSelect = -1, itemToDelete = -1;
@@ -27,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter ;
+    Button bouton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,20 +50,22 @@ public class MainActivity extends AppCompatActivity implements Serializable
         setContentView(R.layout.activity_main);
         entrerValDefaut();
         initialiserVueListeVille();
+        initBouton();
         mRefMainAct = this;
     }
 
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Meteo");
         menu.add(0, v.getId(), 0, "Supprimer élément");
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item)
+    {
         if (item.getTitle() == "Supprimer élément") {
             listAdapter.remove( listAdapter.getItem( itemToDelete ) );
             listAdapter.notifyDataSetChanged();
@@ -85,26 +102,24 @@ public class MainActivity extends AppCompatActivity implements Serializable
         //Récupération de la ListView
         listeVille = (ListView) findViewById(R.id.listView);
         registerForContextMenu( listeVille );
+
+
         ArrayList< String > strTab = new ArrayList< String >();
         //Ajouter les villes graphiquement
-        for( Ville a : mTabVille ) {
+        for( Ville a : mTabVille )
+        {
             strTab.add(a.getNomVille() + "\n" + a.getPays());
             System.out.println(a.getNomVille() + a.getPays());
-            //TextView tv = new TextView(this);
-            //tv.setText(a.getNomVille() + "\n" + a.getPays());
         }
-            try{
-
+            try
+            {
                 listAdapter = new ArrayAdapter<String>( this, R.layout.activity_main, R.id.debug , strTab );
-
                 // Set the ArrayAdapter as the ListView's adapter.
                 listeVille.setAdapter( listAdapter );
 
-                //listeVille.addView( tv );
-
             }catch (Exception e)
             {
-System.out.print( e.toString() );
+                System.out.print( e.toString() );
             }
 
         initClickListenerListeView();
@@ -112,7 +127,24 @@ System.out.print( e.toString() );
     }
 
     /**
-     *  Initialisation des ClickListener sur chaque entré de la ListView.
+     * Initialisation du bouton permettant l'ouverture du formulaire d'ajout de villes.
+     */
+    void initBouton()
+    {
+        bouton = (Button) findViewById(R.id.button);
+        bouton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startActivity( new Intent( mRefMainAct, AddCityActivity.class ) );
+            }
+        });
+    }
+
+    /**
+     *  Initialisation des ClickListener sur chaque entrée de la ListView.
+     *  Un long click fera apparaitre un menu contextuel qui permettra de supprimer un élément.
      */
     void initClickListenerListeView()
     {
@@ -146,7 +178,9 @@ System.out.print( e.toString() );
     }
 
 
-
+    /**
+     *  Initialisation des LongClickListener sur chaque entrée de la ListView.
+     */
     void initLongClickListenerListeView()
     {
         listeVille.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

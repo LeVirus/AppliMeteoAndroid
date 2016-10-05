@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.ceri.cyril.meteo.CityView" />
+        <activity android:name="com.ceri.cyril.meteo.AddCityActivity" />
     </application>
 
 </manifest>
