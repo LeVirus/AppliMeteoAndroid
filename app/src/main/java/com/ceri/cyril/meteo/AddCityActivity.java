@@ -5,18 +5,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class AddCityActivity extends AppCompatActivity {
 
     Button validBouton = null;
     EditText etVille = null, etPays = null;
+    AddCityActivity act = this;
+    static String ville , pays ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
         initElementXML();
+        ville = "";
+        pays = "";
     }
 
     /**
@@ -26,30 +30,26 @@ public class AddCityActivity extends AppCompatActivity {
     {
         etVille = ( EditText ) findViewById( R.id.editText );
         etPays = ( EditText ) findViewById( R.id.editText2 );
-        etVille.setText("");
-        etPays.setText("");
         validBouton = (Button) findViewById( R.id.button2 );
         validBouton.setOnClickListener( new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if( etVille.getText().equals(new String("")) )Toast.makeText(getApplicationContext(),
-                        "super:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(getApplicationContext(),
-                        "tri:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
-                if( etPays.getText().equals(new String("")) )Toast.makeText(getApplicationContext(),
-                        "super:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(getApplicationContext(),
-                        "tri:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
 
-                boolean granted = ( ! etVille.getText().equals(new String(""))  && ! etPays.getText().equals(new String("")) );
-                if(! granted) Toast.makeText(getApplicationContext(),
-                        "Erreur veuillez compléter le formulaire", Toast.LENGTH_SHORT).show();
+                //si les paramètres ne sont pas corrects
+                if( "".equals( etVille.getText().toString() ) || "".equals( etPays.getText().toString() ) )
+                {
+                    Toast.makeText(getApplicationContext(), "Erreur veuillez compléter le formulaire", Toast.LENGTH_SHORT).show();
+                }
                 else
                 {
-                    //Toast.makeText(getApplicationContext(),
-                    //"super:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
+                    ville = etVille.getText().toString();
+                    pays = etPays.getText().toString();
+                    Toast.makeText(getApplicationContext(), "Ok:" + etVille.getText() + ":   :" + etPays.getText()+":", Toast.LENGTH_SHORT).show();
+
+                    act.finish();
+
                 }
             }
         });

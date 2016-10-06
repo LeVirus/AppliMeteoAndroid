@@ -2616,7 +2616,7 @@ containing a value of this type.
         public static final int auto=0x7f0c0021;
         public static final int beginning=0x7f0c0034;
         public static final int bottom=0x7f0c0022;
-        public static final int button=0x7f0c007d;
+        public static final int button=0x7f0c007c;
         public static final int button2=0x7f0c0072;
         public static final int buttonPanel=0x7f0c0047;
         public static final int cancel_action=0x7f0c008b;
@@ -2631,7 +2631,7 @@ containing a value of this type.
         public static final int contentPanel=0x7f0c004d;
         public static final int custom=0x7f0c0053;
         public static final int customPanel=0x7f0c0052;
-        public static final int debug=0x7f0c007c;
+        public static final int debug=0x7f0c007d;
         public static final int decor_content_parent=0x7f0c005c;
         public static final int default_activity_button=0x7f0c0043;
         public static final int design_bottom_sheet=0x7f0c0081;

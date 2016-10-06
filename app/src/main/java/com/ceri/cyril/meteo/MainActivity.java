@@ -1,9 +1,8 @@
 package com.ceri.cyril.meteo;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -17,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import static java.lang.System.in;
 
 
 /**
@@ -27,33 +26,42 @@ import java.util.Arrays;
  * public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
  * public boolean onContextItemSelected(MenuItem item)
  * void entrerValDefaut()
- * void initialiserVueListeVille()
+ * void rafraichirVueListeVille()
  * void initClickListenerListeView()
  * void initLongClickListenerListeView()
  * void setItemToDelete( int i )
  * final Ville getConstVille( int positionVille )
  */
 
-public class MainActivity extends AppCompatActivity implements Serializable
-{
+public class MainActivity extends AppCompatActivity implements Serializable {
     int villeSelect = -1, itemToDelete = -1;
-    ArrayList< Ville > mTabVille = null;
+    ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
-    ArrayAdapter<String> listAdapter ;
+    ArrayAdapter<String> listAdapter;
     Button bouton = null;
+    String ville = "", pays = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listeVille = (ListView) findViewById(R.id.listView);
         entrerValDefaut();
-        initialiserVueListeVille();
         initBouton();
+        rafraichirVueListeVille();
         mRefMainAct = this;
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( ! ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )System.out.print("sdfsdfsd " + ville + " " + pays + "-----------------------------\n");
+        rafraichirVueListeVille();
+
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
@@ -88,8 +96,25 @@ public class MainActivity extends AppCompatActivity implements Serializable
         else
             mTabVille.clear();
         //String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature
-        mTabVille.add(new Ville( "Paris", "France", 0,0,0,0,0.0f ));
-        mTabVille.add(new Ville( "Brest", "France", 0,0,0,0,0.0f ));
+        ajoutVille( "Paris", "France" );
+        ajoutVille( "Brest", "France" );
+    }
+
+    /**
+     * Fonction d'ajout d'une ville dans le tableau.
+     * @param nomVille La ville à ajouter
+     * @param nomPays La ville à ajouter
+     * @return true si les paramètres sont corrects, false sinon.
+     */
+    public boolean ajoutVille( String nomVille, String nomPays )
+    {
+        if( null == nomVille || null == nomVille ||
+                "".equals( nomVille ) || "".equals( nomPays ) )
+        {
+            return false;
+        }
+        mTabVille.add( new Ville( nomVille, nomPays, 0,0,0,0,0.0f ) );
+        return true;
     }
 
 
@@ -97,10 +122,9 @@ public class MainActivity extends AppCompatActivity implements Serializable
      * Fonction récupérant la "ListView" présente dans le fichier XML et y ajoute les villes
      * du tableau.
      */
-    void initialiserVueListeVille()
+    public void rafraichirVueListeVille()
     {
-        //Récupération de la ListView
-        listeVille = (ListView) findViewById(R.id.listView);
+
         registerForContextMenu( listeVille );
 
 
@@ -137,7 +161,16 @@ public class MainActivity extends AppCompatActivity implements Serializable
             @Override
             public void onClick(View v)
             {
-                startActivity( new Intent( mRefMainAct, AddCityActivity.class ) );
+                try {
+                    Intent intent = new Intent( mRefMainAct, AddCityActivity.class );
+                    intent.putExtra("ville",  ville);
+                    intent.putExtra("pays",  pays);
+                    startActivity( intent );
+                    //ville = ""; pays = "";
+                }catch (Exception e)
+                {
+                    System.out.print( e.toString() + "initBouton\n");
+                }
             }
         });
     }
@@ -194,6 +227,14 @@ public class MainActivity extends AppCompatActivity implements Serializable
                 return true;
             }
         });
+    }
+
+    final void afficherTabVille()
+    {
+        for( Ville a : mTabVille )
+        {
+            System.out.print( a.getNomVille() + "\n" );
+        }
     }
 
     /**
