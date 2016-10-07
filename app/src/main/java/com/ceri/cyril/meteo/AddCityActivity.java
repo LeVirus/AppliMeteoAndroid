@@ -28,6 +28,8 @@ public class AddCityActivity extends AppCompatActivity {
      */
     void initElementXML()
     {
+        ville = "";
+        pays = "";
         etVille = ( EditText ) findViewById( R.id.editText );
         etPays = ( EditText ) findViewById( R.id.editText2 );
         validBouton = (Button) findViewById( R.id.button2 );

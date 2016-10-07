@@ -1,8 +1,6 @@
 package com.ceri.cyril.meteo;
 
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -18,8 +16,6 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import static java.lang.System.in;
-
 
 /**
  * protected void onCreate(Bundle savedInstanceState)
@@ -33,21 +29,23 @@ import static java.lang.System.in;
  * final Ville getConstVille( int positionVille )
  */
 
-public class MainActivity extends AppCompatActivity implements Serializable {
+public class MainActivity extends AppCompatActivity implements Serializable
+{
     int villeSelect = -1, itemToDelete = -1;
     ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter;
-    Button bouton = null;
+    Button bouton = null, boutonRaf = null;
     String ville = "", pays = "";
-
+    RefreshTask refreshTask = null;
     @Override
     protected void onCreate(Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listeVille = (ListView) findViewById(R.id.listView);
+        refreshTask = new RefreshTask();
         entrerValDefaut();
         initBouton();
         rafraichirVueListeVille();
@@ -56,11 +54,16 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        if( ! ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )System.out.print("sdfsdfsd " + ville + " " + pays + "-----------------------------\n");
-        rafraichirVueListeVille();
-
+        if( ! ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )
+        {
+            System.out.print("sdfsdfsd " + ville + " " + pays + "-----------------------------\n");
+            rafraichirVueListeVille();
+        }
+        AddCityActivity.ville = "";
+        AddCityActivity.pays = "";
     }
 
     @Override
@@ -128,16 +131,16 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         registerForContextMenu( listeVille );
 
 
-        ArrayList< String > strTab = new ArrayList< String >();
+        ArrayList< String > strTab = new ArrayList<  >();
         //Ajouter les villes graphiquement
         for( Ville a : mTabVille )
         {
             strTab.add(a.getNomVille() + "\n" + a.getPays());
-            System.out.println(a.getNomVille() + a.getPays());
+            //System.out.println(a.getNomVille() + a.getPays());
         }
             try
             {
-                listAdapter = new ArrayAdapter<String>( this, R.layout.activity_main, R.id.debug , strTab );
+                listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
                 // Set the ArrayAdapter as the ListView's adapter.
                 listeVille.setAdapter( listAdapter );
 
@@ -167,6 +170,21 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                     intent.putExtra("pays",  pays);
                     startActivity( intent );
                     //ville = ""; pays = "";
+                }catch (Exception e)
+                {
+                    System.out.print( e.toString() + "initBouton\n");
+                }
+            }
+        });
+
+        boutonRaf = (Button) findViewById(R.id.button3);
+        boutonRaf.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                try {
+                    refreshTask.doInBackground();
                 }catch (Exception e)
                 {
                     System.out.print( e.toString() + "initBouton\n");
