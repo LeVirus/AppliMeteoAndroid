@@ -59,11 +59,20 @@ public class MainActivity extends AppCompatActivity implements Serializable
         super.onResume();
         if( ! ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )
         {
-            System.out.print("sdfsdfsd " + ville + " " + pays + "-----------------------------\n");
             rafraichirVueListeVille();
         }
         AddCityActivity.ville = "";
         AddCityActivity.pays = "";
+        System.out.print("sdfsdfsdsdfsdfsd");
+        try
+        {
+            System.out.print("sdfsdfsd"+CityView.req.getBody().toString() + "sdfsdfsd");
+
+        }catch (Exception e)
+        {
+            System.out.print("sdfsdfsd"+ e.toString()+e+"sdfsdfsd");
+
+        }
     }
 
     @Override
@@ -81,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
             listAdapter.remove( listAdapter.getItem( itemToDelete ) );
             listAdapter.notifyDataSetChanged();
             mTabVille.remove( itemToDelete );
-            Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();System.out.print("sdfsdfsdsdfsdfsd");
         }
         else {
             return false;
@@ -210,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements Serializable
                 try
                 {
                     villeSelect = position;
-                    System.out.print("startAct\n");
                     startActivity( myIntent );
 
 

@@ -29,6 +29,7 @@ MERGED from [com.android.support:support-fragment:24.2.1] /home/cyril/AndroidStu
 MERGED from [com.android.support:appcompat-v7:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/AndroidManifest.xml:25:5-20
 MERGED from [com.android.support:support-vector-drawable:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.2.1/AndroidManifest.xml:23:5-20
 MERGED from [com.android.support:animated-vector-drawable:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/24.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.android.volley:volley:1.0.0] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.volley/volley/1.0.0/AndroidManifest.xml:9:5-20
 	android:label
 		ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.xml:10:9-41
 	android:supportsRtl
@@ -60,7 +61,7 @@ ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.
 	android:name
 		ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.xml:22:19-43
 activity#com.ceri.cyril.meteo.AddCityActivity
-ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.xml:23:9-62
+ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.xml:23:9-53
 	android:name
 		ADDED from /home/cyril/AndroidStudioProjects/Meteo/app/src/main/AndroidManifest.xml:23:19-50
 uses-sdk
@@ -76,6 +77,7 @@ MERGED from [com.android.support:appcompat-v7:24.2.1] /home/cyril/AndroidStudioP
 MERGED from [com.android.support:support-vector-drawable:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.2.1/AndroidManifest.xml:21:5-43
 MERGED from [com.android.support:animated-vector-drawable:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/24.2.1/AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:recyclerview-v7:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/24.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.android.volley:volley:1.0.0] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.volley/volley/1.0.0/AndroidManifest.xml:7:5-43
 	tools:overrideLibrary
 		ADDED from [com.android.support:support-v4:24.2.1] /home/cyril/AndroidStudioProjects/Meteo/app/build/intermediates/exploded-aar/com.android.support/support-v4/24.2.1/AndroidManifest.xml:23:9-51
 	android:targetSdkVersion
