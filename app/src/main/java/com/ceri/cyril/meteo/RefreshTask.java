@@ -3,11 +3,17 @@ package com.ceri.cyril.meteo;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.ceri.cyril.meteo.CityView.errReq;
 import static com.ceri.cyril.meteo.CityView.queue;
@@ -21,32 +27,54 @@ import static com.ceri.cyril.meteo.CityView.respList;
 
  public class RefreshTask extends AsyncTask<URL, Integer, Long>
 {
+    MainActivity main = null;
     long a = 0;
-    ArrayList<Ville> tabVille = null;
+    ArrayList< Ville > tabVille = null;
     protected Long doInBackground(URL... urls)
     {
-        Log.d("-------------------", "getWeather debut-------------------------------------------------------------------\n");
+        Log.d("-------------------", "doInBackground debut-------------------------------------------------------------------\n");
         String url = null;
         if( null == errReq )errReq = new ErrResp();
         if( null == respList )respList = new ResponseListener();
 
         if( tabVille == null )
-           return a;
-
+        {
+            Log.d("Error", "tabville null debut-------------------------------------------------------------------\n");
+            return a;
+        }
+        Lock lock = new ReentrantLock();
         for( Ville v : tabVille )
         {
+
+
+            Log.d("-------------------", "lock debut-------------------------------------------------------------------\n");
+
+            respList.giveRefVille( v );
             url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
                     v.getNomVille() + "%2C%20fr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
             req = new StringRequest(Request.Method.GET, url, respList, errReq );
+
+            lock.lock();
             queue.add( req );
+
+            try
+            {
+                this.wait();
+                lock.unlock();
+            }catch (Exception e)
+            {
+                Log.d("-------------------", e.toString() + "doInBackground-------------------------------------------------------------------\n");
+            }
         }
+        main.writeToast("Mise à jour terminée");
         return a;
     }
 
-public void memTabVille( ArrayList<Ville> memTab )
+public void memTabVille( ArrayList<Ville> memTab, MainActivity mainn )
 {
     tabVille = memTab;
+    main = mainn;
 }
 
 

@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,7 +40,7 @@ public class CityView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_view);
         refThis = this;
-        queue = Volley.newRequestQueue( this );
+        if( queue == null)  queue = Volley.newRequestQueue( this );
         recupRefTextView();
         recupBundle();
         ecrireInfoVille();
@@ -91,8 +92,66 @@ public class CityView extends AppCompatActivity {
 
     }
 
-    public void sendMajVille(List<String> infoVille)
+
+
+
+    public void getWeather()
     {
+        Log.d("-------------------", "getWeather debut-------------------------------------------------------------------\n");
+        if(null == errReq)errReq = new ErrResp();
+        if(null == respList)respList = new ResponseListener();
+        respList.giveRefVille(ville);
+        req = new StringRequest(Request.Method.GET, url, respList, errReq );
+        queue.add( req );
+
+    }
+}
+
+class ResponseListener implements Response.Listener<String>
+{
+    CityView ref = null;
+    List<String> lstStr = null;
+    Ville ville = null;
+        @Override
+        public void onResponse(String s)
+        {
+            Log.d("reponse::::::::", s + "getWeather -------------------------------------------------------------------\n");
+
+            InputStream stream = new ByteArrayInputStream(s.getBytes());
+            if( Ville.refJsonResp == null )
+                Ville.refJsonResp = new JSONResponseHandler();
+            try
+            {
+                lstStr = Ville.refJsonResp.handleResponse(stream, "");
+                sendMajVille(  );
+            }catch (Exception e)
+            {
+                System.out.println(e.toString() + "sendMaj");
+            }
+            try
+            {
+                notifyAll();
+            }catch (Exception e)
+            {
+                System.out.println(e.toString() + "notify");
+            }
+        }
+
+    public List<String> getInfo()
+    {
+        return lstStr;
+    }
+
+
+    public void giveRefVille(Ville v)
+    {
+        ville = v;
+    }
+
+
+    public void sendMajVille()
+    {
+        if( ville == null )return;
         try
         {
             //List<String> recupInfo = respList.getInfo();
@@ -101,7 +160,7 @@ public class CityView extends AppCompatActivity {
             int cmpt = 0;
             float temp = 0, vent = 0, pression = 0;
             String date = "", dirVent = "";
-            for(String a  : infoVille)
+            for(String a  : lstStr)
             {
                 Log.d("-------------------", a + "  add info to Ville -------------------------------------------------------------------\n");
                 switch( cmpt ){
@@ -129,55 +188,8 @@ public class CityView extends AppCompatActivity {
         {
             Log.d("-------------------", e.toString() + "  add info to Ville -------------------------------------------------------------------\n");
         }
-        ville.afficherVille();
-        ecrireInfoVille();
-    }
-
-
-    public void getWeather()
-    {
-        Log.d("-------------------", "getWeather debut-------------------------------------------------------------------\n");
-        if(null == errReq)errReq = new ErrResp();
-        if(null == respList)respList = new ResponseListener();
-        respList.giveRef( refThis );
-        req = new StringRequest(Request.Method.GET, url, respList, errReq );
-        queue.add( req );
 
     }
-}
-
-class ResponseListener implements Response.Listener<String>
-{
-    CityView ref = null;
-    List<String> lstStr = null;
-        @Override
-        public void onResponse(String s)
-        {
-            Log.d("reponse::::::::", s + "getWeather -------------------------------------------------------------------\n");
-
-            InputStream stream = new ByteArrayInputStream(s.getBytes());
-            if( Ville.refJsonResp == null )
-                Ville.refJsonResp = new JSONResponseHandler();
-            try
-            {
-                lstStr = Ville.refJsonResp.handleResponse(stream, "");
-                ref.sendMajVille( lstStr );//a modifier
-            }catch (Exception e)
-            {
-                System.out.println(e.toString() + "getweather");
-            }
-        }
-
-    public List<String> getInfo()
-    {
-        return lstStr;
-    }
-
-    public void giveRef(CityView refCityView)
-    {
-        ref = refCityView;
-    }
-
 
 };
 

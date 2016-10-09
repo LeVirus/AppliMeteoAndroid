@@ -14,8 +14,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.Volley;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import static com.ceri.cyril.meteo.CityView.queue;
 
 
 /**
@@ -41,23 +45,23 @@ public class MainActivity extends AppCompatActivity implements Serializable
     String ville = "", pays = "";
     RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
-    RefreshTask refreshTask = null;
     @Override
     protected void onCreate(Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listeVille = (ListView) findViewById(R.id.listView);
-        refreshTask = new RefreshTask();
         if( Ville.refJsonResp == null)
             Ville.refJsonResp = new JSONResponseHandler();
+        entrerValDefaut();
+        if( queue == null)  queue = Volley.newRequestQueue( this );
         if( refreshTaskk == null )
         {
             refreshTaskk = new RefreshTask();
-            refreshTaskk.memTabVille( mTabVille );
+            refreshTaskk.memTabVille( mTabVille, this );
         }
 
-        entrerValDefaut();
+
         initBouton();
         rafraichirVueListeVille();
         mRefMainAct = this;
@@ -98,6 +102,16 @@ public class MainActivity extends AppCompatActivity implements Serializable
             return false;
         }
         return true;
+    }
+
+    public void writeToast(final String s){
+        Log.d("TapisJeu", "C: Connecting...");
+        runOnUiThread(new Runnable() {
+            public void run() {
+
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -195,11 +209,12 @@ public class MainActivity extends AppCompatActivity implements Serializable
             @Override
             public void onClick(View v)
             {
+
                 try {
-                    refreshTask.doInBackground();
+                    refreshTaskk.doInBackground();
                 }catch (Exception e)
                 {
-                    Log.d("-------------------",e.toString() + " initBouton\n");
+                    Log.d("-------------------",e.toString() + " refreshTask initBouton\n");
                 }
             }
         });
