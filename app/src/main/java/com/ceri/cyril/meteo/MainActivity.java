@@ -39,8 +39,9 @@ public class MainActivity extends AppCompatActivity implements Serializable
     ArrayAdapter<String> listAdapter;
     Button bouton = null, boutonRaf = null;
     String ville = "", pays = "";
-    RefreshTask refreshTask = null;
+    RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
+    RefreshTask refreshTask = null;
     @Override
     protected void onCreate(Bundle savedInstanceState )
     {
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements Serializable
         refreshTask = new RefreshTask();
         if( Ville.refJsonResp == null)
             Ville.refJsonResp = new JSONResponseHandler();
+        if( refreshTaskk == null )
+        {
+            refreshTaskk = new RefreshTask();
+            refreshTaskk.memTabVille( mTabVille );
+        }
+
         entrerValDefaut();
         initBouton();
         rafraichirVueListeVille();
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
     public void onResume()
     {
         super.onResume();
-        if( ! ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )
+        if( ajoutVille( AddCityActivity.ville, AddCityActivity.pays ) )
         {
             rafraichirVueListeVille();
         }

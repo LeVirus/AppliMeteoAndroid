@@ -27,9 +27,9 @@ public class CityView extends AppCompatActivity {
     TextView tvVille, tvPays, tvVent, tvTemperature, tvPression, tvDate;
     String url = null;
     static StringRequest req;
-    RequestQueue queue = null;
-    private static ErrResp errReq = null;
-    private static ResponseListener respList = null;
+    static RequestQueue queue = null;
+    static ErrResp errReq = null;
+    static ResponseListener respList = null;
     CityView refThis = null;
 
 
@@ -161,7 +161,7 @@ class ResponseListener implements Response.Listener<String>
             try
             {
                 lstStr = Ville.refJsonResp.handleResponse(stream, "");
-                ref.sendMajVille( lstStr );
+                ref.sendMajVille( lstStr );//a modifier
             }catch (Exception e)
             {
                 System.out.println(e.toString() + "getweather");
