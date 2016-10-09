@@ -3,6 +3,7 @@ package com.ceri.cyril.meteo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
     Button bouton = null, boutonRaf = null;
     String ville = "", pays = "";
     RefreshTask refreshTask = null;
+    JSONResponseHandler jsonResp = null;
     @Override
     protected void onCreate(Bundle savedInstanceState )
     {
@@ -46,11 +48,14 @@ public class MainActivity extends AppCompatActivity implements Serializable
         setContentView(R.layout.activity_main);
         listeVille = (ListView) findViewById(R.id.listView);
         refreshTask = new RefreshTask();
+        if( Ville.refJsonResp == null)
+            Ville.refJsonResp = new JSONResponseHandler();
         entrerValDefaut();
         initBouton();
         rafraichirVueListeVille();
         mRefMainAct = this;
 
+        Log.d("-------------------","Application -------------------------------------------------------------------\n");
     }
 
     @Override
@@ -63,16 +68,6 @@ public class MainActivity extends AppCompatActivity implements Serializable
         }
         AddCityActivity.ville = "";
         AddCityActivity.pays = "";
-        System.out.print("sdfsdfsdsdfsdfsd");
-        try
-        {
-            System.out.print("sdfsdfsd"+CityView.req.getBody().toString() + "sdfsdfsd");
-
-        }catch (Exception e)
-        {
-            System.out.print("sdfsdfsd"+ e.toString()+e+"sdfsdfsd");
-
-        }
     }
 
     @Override
@@ -90,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
             listAdapter.remove( listAdapter.getItem( itemToDelete ) );
             listAdapter.notifyDataSetChanged();
             mTabVille.remove( itemToDelete );
-            Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();System.out.print("sdfsdfsdsdfsdfsd");
+            Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
         }
         else {
             return false;
@@ -125,7 +120,9 @@ public class MainActivity extends AppCompatActivity implements Serializable
         {
             return false;
         }
-        mTabVille.add( new Ville( nomVille, nomPays, 0,0,0,0,0.0f ) );
+        Ville v = new Ville( nomVille, nomPays, "dd",0.0f,"dd",0.0f,0.0f );
+        v.memRefJsonResp( jsonResp );
+        mTabVille.add( v );
         return true;
     }
 
@@ -145,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements Serializable
         for( Ville a : mTabVille )
         {
             strTab.add(a.getNomVille() + "\n" + a.getPays());
-            //System.out.println(a.getNomVille() + a.getPays());
         }
             try
             {
@@ -155,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
 
             }catch (Exception e)
             {
-                System.out.print( e.toString() );
+                Log.d("-------------------",e.toString() + " -------------------------------------------------------------------\n");
             }
 
         initClickListenerListeView();
@@ -181,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
                     //ville = ""; pays = "";
                 }catch (Exception e)
                 {
-                    System.out.print( e.toString() + "initBouton\n");
+                    Log.d("-------------------",e.toString() + " initBouton\n");
                 }
             }
         });
@@ -196,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
                     refreshTask.doInBackground();
                 }catch (Exception e)
                 {
-                    System.out.print( e.toString() + "initBouton\n");
+                    Log.d("-------------------",e.toString() + " initBouton\n");
                 }
             }
         });
@@ -229,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
 
                 }catch (Exception e)
                 {
-                    System.out.print( e.toString() );
+                    Log.d("-------------------",e.toString() + " setOnItemClickListener\n");
                 }
             }
         });
@@ -259,7 +255,8 @@ public class MainActivity extends AppCompatActivity implements Serializable
     {
         for( Ville a : mTabVille )
         {
-            System.out.print( a.getNomVille() + "\n" );
+            Log.d("-------------------",a.getNomVille() + " afficherTabVille\n");
+
         }
     }
 
