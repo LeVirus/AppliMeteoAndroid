@@ -107,17 +107,13 @@ public class CityView extends AppCompatActivity {
     {
         if( ville == null )return;
         tvVille.setText( "Ville     " + ville.getNomVille() );
-        tvPays.setText( "Pays     " + ville.getPays() );
+        tvPays.setText( "Pays     " + ville.getPays()+"                        " );
         tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + "\nVitesse vent   " + ville.getVitesseVent() );
         tvTemperature.setText( "Temperature     "  + ville.getTemperature() );
         tvPression.setText( "Pression atmosphérique    "  + ville.getPressionAtmos() );
         tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );
         url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
                 ville.getNomVille() + "%2C%20fr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-
-        Log.d( "-------------------", ville.getTemperature() + "   ecrireInfoVille -------------------------------------------------------------------\n" );
-
-
     }
 
 
@@ -125,14 +121,12 @@ public class CityView extends AppCompatActivity {
 
     public void getWeather()
     {
-        Log.d("-------------------", "getWeather debut-------------------------------------------------------------------\n");
         if(null == errReq)errReq = new ErrResp();
         if(null == respList)respList = new ResponseListener();
         respList.giveRefVille( ville );
         respList.giveRefView( refThis );
         //req = new StringRequest(Request.Method.GET, url, respList, errReq );
         MainActivity.refreshTaskk.doInBackground( index );
-        Log.d("-------------------", "getWeather add-------------------------------------------------------------------\n");
 
         //queue.add( req );
 
@@ -227,12 +221,8 @@ class ResponseListener implements Response.Listener<String>
                 }
                 cmpt++;
             }
-            Log.d("-------------------", vent + "  Vent-------------------------------------------------------------------\n");
-
             ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp );
             ref.majVille( ville );
-
-            Log.d("-------------------", ville.getVitesseVent()+ "  Vent-------------------------------------------------------------------\n");
 
         }catch (Exception e)
         {

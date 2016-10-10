@@ -12,15 +12,6 @@
     tools:context="com.ceri.cyril.meteo.MainActivity">
 
 
-
-
-    <Button
-        android:text="Ajouter ville"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/button" />
-
     <TextView
         android:text=""
         android:layout_width="wrap_content"
@@ -41,13 +32,12 @@
         android:layout_alignEnd="@+id/debug" />
 
     <Button
-        android:text="Raffraichir"
+        android:text="Ajouter ville"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/button"
-        android:layout_marginStart="3dp"
-        android:id="@+id/button3"
-        android:layout_alignTop="@+id/button" />
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>
