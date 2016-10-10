@@ -3,6 +3,8 @@ package com.ceri.cyril.meteo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
@@ -25,7 +28,9 @@ import static java.lang.Thread.sleep;
 public class CityView extends AppCompatActivity {
 
     Ville ville;
+    int index = -1;
     TextView tvVille, tvPays, tvVent, tvTemperature, tvPression, tvDate;
+    Button buttonRefresh;
     String url = null;
     static StringRequest req;
     static RequestQueue queue = null;
@@ -43,8 +48,10 @@ public class CityView extends AppCompatActivity {
         if( queue == null)  queue = Volley.newRequestQueue( this );
         recupRefTextView();
         recupBundle();
-        ecrireInfoVille();
-        getWeather();
+        ecrireInfoVilleUI();
+        majButton();
+
+        //getWeather();
 
     }
 
@@ -56,6 +63,26 @@ public class CityView extends AppCompatActivity {
         tvTemperature = (TextView) findViewById( R.id.Temperature );
         tvPression = (TextView) findViewById( R.id.Pression );
         tvDate = (TextView) findViewById( R.id.Date );
+        buttonRefresh = (Button) findViewById( R.id.button4 );
+
+    }
+
+    void majButton()
+    {
+        buttonRefresh.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                try {
+                    getWeather();
+                }catch (Exception e)
+                {
+                    Log.d("-------------------",e.toString() + " refreshTask initBouton\n");
+                }
+            }
+        });
     }
 
     /**
@@ -68,6 +95,7 @@ public class CityView extends AppCompatActivity {
             try
             {
                 ville = (Ville)extras.get("ville");
+                index = (int)extras.get("positionn");
             }catch (Exception e)
             {
                 System.out.println(e.toString() + "recupBundle");
@@ -75,7 +103,7 @@ public class CityView extends AppCompatActivity {
         }
     }
 
-    void ecrireInfoVille()
+    void ecrireInfoVilleUI()
     {
         if( ville == null )return;
         tvVille.setText( "Ville     " + ville.getNomVille() );
@@ -87,7 +115,7 @@ public class CityView extends AppCompatActivity {
         url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
                 ville.getNomVille() + "%2C%20fr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
-        Log.d( "-------------------", url + "ecrireInfoVille -------------------------------------------------------------------\n" );
+        Log.d( "-------------------", ville.getTemperature() + "   ecrireInfoVille -------------------------------------------------------------------\n" );
 
 
     }
@@ -100,10 +128,19 @@ public class CityView extends AppCompatActivity {
         Log.d("-------------------", "getWeather debut-------------------------------------------------------------------\n");
         if(null == errReq)errReq = new ErrResp();
         if(null == respList)respList = new ResponseListener();
-        respList.giveRefVille(ville);
-        req = new StringRequest(Request.Method.GET, url, respList, errReq );
-        queue.add( req );
+        respList.giveRefVille( ville );
+        respList.giveRefView( refThis );
+        //req = new StringRequest(Request.Method.GET, url, respList, errReq );
+        MainActivity.refreshTaskk.doInBackground( index );
+        Log.d("-------------------", "getWeather add-------------------------------------------------------------------\n");
 
+        //queue.add( req );
+
+    }
+
+    public void majVille( Ville a )
+    {
+        ville = a;
     }
 }
 
@@ -124,17 +161,21 @@ class ResponseListener implements Response.Listener<String>
             {
                 lstStr = Ville.refJsonResp.handleResponse(stream, "");
                 sendMajVille(  );
+                if( ref != null )
+                {
+                    Log.d("-------------------","  Ecrire ville-------------------------------------------------------------------\n");
+
+                    ref.ecrireInfoVilleUI();
+                    Log.d("-------------------","  Ecrire ville-------------------------------------------------------------------\n");
+
+                    ref = null;
+                    MainActivity.refreshTaskk.writeToast("Mise à jour Terminée");
+                }
             }catch (Exception e)
             {
                 System.out.println(e.toString() + "sendMaj");
             }
-            try
-            {
-                notifyAll();
-            }catch (Exception e)
-            {
-                System.out.println(e.toString() + "notify");
-            }
+
         }
 
     public List<String> getInfo()
@@ -148,6 +189,10 @@ class ResponseListener implements Response.Listener<String>
         ville = v;
     }
 
+    public void giveRefView( CityView reff )
+    {
+        ref = reff;
+    }
 
     public void sendMajVille()
     {
@@ -182,11 +227,16 @@ class ResponseListener implements Response.Listener<String>
                 }
                 cmpt++;
             }
+            Log.d("-------------------", vent + "  Vent-------------------------------------------------------------------\n");
 
-            ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp);
+            ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp );
+            ref.majVille( ville );
+
+            Log.d("-------------------", ville.getVitesseVent()+ "  Vent-------------------------------------------------------------------\n");
+
         }catch (Exception e)
         {
-            Log.d("-------------------", e.toString() + "  add info to Ville -------------------------------------------------------------------\n");
+            Log.d("-------------------", e.toString() + "  Error-------------------------------------------------------------------\n");
         }
 
     }
@@ -199,7 +249,7 @@ class ErrResp implements Response.ErrorListener
 public void onErrorResponse(VolleyError volleyError)
         {
 
-    //Log.d("ERROR-------", "getWeather -------------------------------------------------------------------\n");
+            MainActivity.refreshTaskk.writeToast("Problème requête");
 
 }
 };

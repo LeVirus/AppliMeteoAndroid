@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
     ArrayAdapter<String> listAdapter;
     Button bouton = null, boutonRaf = null;
     String ville = "", pays = "";
-    RefreshTask refreshTaskk = null;
+    static RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
     @Override
     protected void onCreate(Bundle savedInstanceState )
@@ -203,21 +203,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
             }
         });
 
-        boutonRaf = (Button) findViewById(R.id.button3);
-        boutonRaf.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
 
-                try {
-                    refreshTaskk.doInBackground();
-                }catch (Exception e)
-                {
-                    Log.d("-------------------",e.toString() + " refreshTask initBouton\n");
-                }
-            }
-        });
     }
 
     /**
@@ -233,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements Serializable
 
                 Intent myIntent = new Intent(mRefMainAct, CityView.class);
                 myIntent.putExtra("ville", mTabVille.get(position));
-                //myIntent.putExtra("int", position);
+                myIntent.putExtra("positionn", position);
                 try
                 {
                     villeSelect = position;

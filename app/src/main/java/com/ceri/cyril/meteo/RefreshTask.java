@@ -3,15 +3,12 @@ package com.ceri.cyril.meteo;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -30,6 +27,14 @@ import static com.ceri.cyril.meteo.CityView.respList;
     MainActivity main = null;
     long a = 0;
     ArrayList< Ville > tabVille = null;
+    int indexVille = -1;
+
+    protected void doInBackground(int i)
+    {
+        indexVille = i;
+        doInBackground();
+    }
+
     protected Long doInBackground(URL... urls)
     {
         Log.d("-------------------", "doInBackground debut-------------------------------------------------------------------\n");
@@ -42,10 +47,10 @@ import static com.ceri.cyril.meteo.CityView.respList;
             Log.d("Error", "tabville null debut-------------------------------------------------------------------\n");
             return a;
         }
-        Lock lock = new ReentrantLock();
-        for( Ville v : tabVille )
-        {
 
+        Lock lock = new ReentrantLock();
+
+Ville v = tabVille.get(indexVille);
 
             Log.d("-------------------", "lock debut-------------------------------------------------------------------\n");
 
@@ -55,19 +60,7 @@ import static com.ceri.cyril.meteo.CityView.respList;
 
             req = new StringRequest(Request.Method.GET, url, respList, errReq );
 
-            lock.lock();
             queue.add( req );
-
-            try
-            {
-                this.wait();
-                lock.unlock();
-            }catch (Exception e)
-            {
-                Log.d("-------------------", e.toString() + "doInBackground-------------------------------------------------------------------\n");
-            }
-        }
-        main.writeToast("Mise à jour terminée");
         return a;
     }
 
@@ -75,6 +68,11 @@ public void memTabVille( ArrayList<Ville> memTab, MainActivity mainn )
 {
     tabVille = memTab;
     main = mainn;
+}
+
+    public void writeToast(String g)
+{
+    main.writeToast(g);
 }
 
 
