@@ -51,10 +51,12 @@ public class CityView extends AppCompatActivity {
         ecrireInfoVilleUI();
         majButton();
 
-        //getWeather();
 
     }
 
+    /**
+     * Récupération des objets UI en provenance du fichier XML associé.
+     */
     void recupRefTextView()
     {
         tvVille = (TextView) findViewById( R.id.ville );
@@ -67,6 +69,9 @@ public class CityView extends AppCompatActivity {
 
     }
 
+    /**
+     * Traitement de l'appui du bouton Raffraichir.
+     */
     void majButton()
     {
         buttonRefresh.setOnClickListener(new View.OnClickListener()
@@ -80,6 +85,7 @@ public class CityView extends AppCompatActivity {
                 }catch (Exception e)
                 {
                     Log.d("-------------------",e.toString() + " refreshTask initBouton\n");
+
                 }
             }
         });
@@ -103,6 +109,9 @@ public class CityView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initialisation de la présentation graphique de la ville affichée et préparation de l'URL à envoyer au serveur Yahoo.
+     */
     void ecrireInfoVilleUI()
     {
         if( ville == null )return;
@@ -117,8 +126,10 @@ public class CityView extends AppCompatActivity {
     }
 
 
-
-
+    /**
+     * Envoi de la requète au serveur météo, aprés instanciation évantuelles des objets nécessaires
+     * et envoie des références au Listener.
+     */
     public void getWeather()
     {
         if(null == errReq)errReq = new ErrResp();
@@ -178,24 +189,33 @@ class ResponseListener implements Response.Listener<String>
     }
 
 
+    /**
+     * Récupération de la référence de la ville à traiter.
+     * @param v La référence vers la ville.
+     */
     public void giveRefVille(Ville v)
     {
         ville = v;
     }
 
+    /**
+     * Récupération de la référence de la vue représentant la ville.
+     * @param reff La référence vers la vue.
+     */
     public void giveRefView( CityView reff )
     {
         ref = reff;
     }
 
+    /**
+     * Application de la mise à jour aprés extraction des données du callback.
+     * Mise à jour de l'objet Ville et de la Vue.
+     */
     public void sendMajVille()
     {
         if( ville == null )return;
         try
         {
-            //List<String> recupInfo = respList.getInfo();
-
-
             int cmpt = 0;
             float temp = 0, vent = 0, pression = 0;
             String date = "", dirVent = "";

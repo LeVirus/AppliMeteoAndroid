@@ -39,7 +39,7 @@ public class AddCityActivity extends AppCompatActivity {
             public void onClick(View v)
             {
 
-                //si les paramètres ne sont pas corrects
+                //si au moins un des paramètres sont vides
                 if( "".equals( etVille.getText().toString() ) || "".equals( etPays.getText().toString() ) )
                 {
                     Toast.makeText(getApplicationContext(), "Erreur veuillez compléter le formulaire", Toast.LENGTH_SHORT).show();

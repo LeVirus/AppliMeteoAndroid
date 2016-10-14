@@ -25,8 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.ceri.cyril.meteo.CityView" />
-        <activity android:name="com.ceri.cyril.meteo.AddCityActivity" />
+        <activity
+            android:name="com.ceri.cyril.meteo.AddCityActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.ceri.cyril.meteo.CityView"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

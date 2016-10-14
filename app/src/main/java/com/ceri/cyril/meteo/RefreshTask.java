@@ -48,7 +48,7 @@ import static com.ceri.cyril.meteo.CityView.respList;
             return a;
         }
 
-        Lock lock = new ReentrantLock();
+        //Lock lock = new ReentrantLock();
 
 Ville v = tabVille.get(indexVille);
 

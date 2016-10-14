@@ -18,8 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CityView" />
-        <activity android:name=".AddCityActivity" />
+        <activity
+            android:name=".AddCityActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".CityView"
+            android:screenOrientation="portrait">
+            </activity>
     </application>
 
 </manifest>
