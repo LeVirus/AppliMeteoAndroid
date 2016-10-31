@@ -1,10 +1,14 @@
 package com.ceri.cyril.meteo;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +20,6 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.Volley;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import static com.ceri.cyril.meteo.CityView.queue;
@@ -34,17 +37,19 @@ import static com.ceri.cyril.meteo.CityView.queue;
  * final Ville getConstVille( int positionVille )
  */
 
-public class MainActivity extends AppCompatActivity implements Serializable
+public class MainActivity extends AppCompatActivity //implements Serializable
 {
     int villeSelect = -1, itemToDelete = -1;
     ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter;
-    Button bouton = null, boutonRaf = null;
+    Button bouton = null;
     String ville = "", pays = "";
     static RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
+    ActionBar actionBar = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState )
     {
@@ -62,7 +67,17 @@ public class MainActivity extends AppCompatActivity implements Serializable
         }
 
 
-        initBouton();
+
+        try
+        {
+            initBouton();
+        }
+        catch (Exception e)
+        {
+
+        }
+
+
         rafraichirVueListeVille();
         mRefMainAct = this;
 
@@ -102,6 +117,32 @@ public class MainActivity extends AppCompatActivity implements Serializable
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_scrolling, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+
+            case R.id.action_favorite:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     public void writeToast(final String s){
@@ -202,7 +243,31 @@ public class MainActivity extends AppCompatActivity implements Serializable
                 }
             }
         });
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Menu");
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
+        View v = actionBar.getCustomView();
+        this.registerForContextMenu(v);
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.showContextMenu();
+                Log.d("Fjisdjisfsdhh","--------------------------------------------------");
+            }
+        });
+
+        v.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener()
+        {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+            {
+                MainActivity.super.onCreateContextMenu(menu, v, menuInfo);
+                menu.setHeaderTitle("Meteo");
+                menu.add(0, v.getId(), 0, "Ajouter Ville");
+            }
+        });
 
     }
 

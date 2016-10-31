@@ -649,12 +649,12 @@ int id action_bar_subtitle 0x7f0d003e
 int id action_bar_title 0x7f0d003d
 int id action_context_bar 0x7f0d005f
 int id action_divider 0x7f0d008f
+int id action_favorite 0x7f0d0098
 int id action_menu_divider 0x7f0d0002
 int id action_menu_presenter 0x7f0d0003
 int id action_mode_bar 0x7f0d005b
 int id action_mode_bar_stub 0x7f0d005a
 int id action_mode_close_button 0x7f0d003f
-int id action_settings 0x7f0d0098
 int id activity_add_city 0x7f0d006d
 int id activity_chooser_view_content 0x7f0d0040
 int id activity_city_view 0x7f0d0073

@@ -2600,12 +2600,12 @@ containing a value of this type.
         public static final int action_bar_title=0x7f0d003d;
         public static final int action_context_bar=0x7f0d005f;
         public static final int action_divider=0x7f0d008f;
+        public static final int action_favorite=0x7f0d0098;
         public static final int action_menu_divider=0x7f0d0002;
         public static final int action_menu_presenter=0x7f0d0003;
         public static final int action_mode_bar=0x7f0d005b;
         public static final int action_mode_bar_stub=0x7f0d005a;
         public static final int action_mode_close_button=0x7f0d003f;
-        public static final int action_settings=0x7f0d0098;
         public static final int activity_add_city=0x7f0d006d;
         public static final int activity_chooser_view_content=0x7f0d0040;
         public static final int activity_city_view=0x7f0d0073;
