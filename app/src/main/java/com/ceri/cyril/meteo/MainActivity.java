@@ -124,30 +124,34 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_scrolling, menu);
-
-        return super.onCreateOptionsMenu(menu);
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
+        return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.menu_refresh:
+                writeToast("test bouton 1");
+                // Comportement du bouton "Rafraichir"
+                return true;
+            case R.id.menu_search:
+                writeToast("test bouton 1");
 
-            case R.id.action_favorite:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
+                // Comportement du bouton "Recherche"
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
+
+
 
     public void writeToast(final String s){
         Log.d("TapisJeu", "C: Connecting...");

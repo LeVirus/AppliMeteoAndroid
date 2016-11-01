@@ -1,11 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.ceri.cyril.meteo.ScrollingActivity">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_favorite"
-        android:title="Ajouter Ville"
-        app:showAsAction="withText"/>
-
+        android:id="@+id/menu_search"
+        android:showAsAction="always"
+        android:title="Ajouter Ville"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:showAsAction="always"
+        android:title="Préférences"/>
 </menu>
