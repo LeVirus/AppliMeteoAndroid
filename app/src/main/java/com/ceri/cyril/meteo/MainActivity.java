@@ -40,7 +40,7 @@ import static com.ceri.cyril.meteo.CityView.queue;
 public class MainActivity extends AppCompatActivity //implements Serializable
 {
     int villeSelect = -1, itemToDelete = -1;
-    ArrayList<Ville> mTabVille = null;
+    //ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter;
@@ -49,11 +49,14 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     static RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
     ActionBar actionBar = null;
+    static QSLManager qslManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState )
+    protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
+        if( null == qslManager )qslManager = new QSLManager( this );
+
         setContentView(R.layout.activity_main);
         listeVille = (ListView) findViewById(R.id.listView);
         if( Ville.refJsonResp == null)
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
         if( refreshTaskk == null )
         {
             refreshTaskk = new RefreshTask();
-            refreshTaskk.memTabVille( mTabVille, this );
+            refreshTaskk.memTabVille( qslManager.getAllCities(), this );
         }
 
 
@@ -110,7 +113,8 @@ public class MainActivity extends AppCompatActivity //implements Serializable
         if (item.getTitle() == "Supprimer élément") {
             listAdapter.remove( listAdapter.getItem( itemToDelete ) );
             listAdapter.notifyDataSetChanged();
-            mTabVille.remove( itemToDelete );
+            qslManager.supprVille( itemToDelete );
+           // mTabVille.remove( itemToDelete );
             Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
         }
         else {
@@ -160,13 +164,12 @@ public class MainActivity extends AppCompatActivity //implements Serializable
      */
     void entrerValDefaut()
     {
-        if( mTabVille == null )
-            mTabVille = new ArrayList< Ville >();
-        else
-            mTabVille.clear();
+
         //String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature
-        ajoutVille( "Paris", "France" );
-        ajoutVille( "Brest", "France" );
+    qslManager.ajoutVille( "Paris", "France" );
+    qslManager.ajoutVille( "Brest", "France" );
+
+
     }
 
     /**
@@ -182,10 +185,8 @@ public class MainActivity extends AppCompatActivity //implements Serializable
         {
             return false;
         }
-        Ville v = new Ville( nomVille, nomPays, "dd",0.0f,"dd",0.0f,0.0f );
-        v.memRefJsonResp( jsonResp );
-        mTabVille.add( v );
-        return true;
+
+        return qslManager.ajoutVille( nomVille, nomPays );
     }
 
 
@@ -201,9 +202,19 @@ public class MainActivity extends AppCompatActivity //implements Serializable
 
         ArrayList< String > strTab = new ArrayList<  >();
         //Ajouter les villes graphiquement
-        for( Ville a : mTabVille )
+        //if( null == qslManager )qslManager = new QSLManager( this );
+
+        ArrayList< Ville > arrayVille = qslManager.getAllCities();
+        if( arrayVille.size() == 0 )return;
+        for( Ville a : arrayVille )
         {
+            try
+            {
             strTab.add(a.getNomVille() + "\n" + a.getPays());
+            }catch (Exception e)
+            {
+                Log.d("rafraichirVueListeVille",e.toString() + " -------------------------------------------------------------------strTab.add\n");
+            }
         }
             try
             {
@@ -283,7 +294,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
                 // When clicked, show a toast with the TextView text
 
                 Intent myIntent = new Intent(mRefMainAct, CityView.class);
-                myIntent.putExtra("ville", mTabVille.get(position));
+                myIntent.putExtra("ville", qslManager.getAllCities().get(position));
                 myIntent.putExtra("positionn", position);
                 try
                 {
@@ -311,7 +322,8 @@ public class MainActivity extends AppCompatActivity //implements Serializable
      */
     void initLongClickListenerListeView()
     {
-        listeVille.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listeVille.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id)
@@ -326,7 +338,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
 
     final void afficherTabVille()
     {
-        for( Ville a : mTabVille )
+        for( Ville a : qslManager.getAllCities() )
         {
             Log.d("-------------------",a.getNomVille() + " afficherTabVille\n");
 
@@ -350,11 +362,11 @@ public class MainActivity extends AppCompatActivity //implements Serializable
      */
     final Ville getConstVille( int positionVille )
     {
-        if( positionVille < 0 || positionVille > mTabVille.size() )
+        if( positionVille < 0 || positionVille > qslManager.getAllCities().size() )
         {
             return null;
         }
-        return mTabVille.get( positionVille );
+        return qslManager.getAllCities().get( positionVille );
     }
 
 }
