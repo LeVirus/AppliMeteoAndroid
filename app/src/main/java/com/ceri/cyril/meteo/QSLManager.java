@@ -43,6 +43,7 @@ public class QSLManager extends SQLiteOpenHelper
     public QSLManager( Context context )
     {
         super(context, strNomTable, null, DATABASE_VERSION );
+        synchroSQLTab();
     }
 
 
@@ -126,6 +127,7 @@ public class QSLManager extends SQLiteOpenHelper
      */
     void synchroSQLTab()
     {
+        float temp = 100000, vit = 100000, atmos = 100000;
         SQLiteDatabase table = getWritableDatabase();
 
 
@@ -141,9 +143,16 @@ public class QSLManager extends SQLiteOpenHelper
             {
                 Log.d( "Synchro ::------------ ", curs.getString( NOM_VILLE ) + curs.getString( PAYS ) + "-------------------------------------");
 
-                float temp = Float.parseFloat( curs.getString( TEMPERATURE ) );
-                float vit = Float.parseFloat( curs.getString( VITESSE_VENT ) );
-                float atmos = Float.parseFloat( curs.getString( PRESSION_ATMOS ) );
+                try
+                {
+                     temp = Float.parseFloat( curs.getString( TEMPERATURE ) );
+                     vit = Float.parseFloat( curs.getString( VITESSE_VENT ) );
+                     atmos = Float.parseFloat( curs.getString( PRESSION_ATMOS ) );
+                }catch (Exception e)
+                {
+
+                }
+
 
                 Ville v = new Ville(curs.getString( NOM_VILLE ), curs.getString( PAYS ), curs.getString( DATE_DERNIER_RELEVE ),
                         vit, curs.getString( DATE_DERNIER_RELEVE ), atmos, temp );
@@ -164,13 +173,22 @@ public class QSLManager extends SQLiteOpenHelper
         boolean granted ;
         mMemTable = getWritableDatabase();
 
-        String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
-        long current = mMemTable.delete( strNomTable, where, null);
+        //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
+        String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
+
+
+        if( listVille.size() < indexVille )return false;
+        //long current = mMemTable.delete( strNomTable, where, null);
+        long current = mMemTable.delete(strNomTable, where, new String[]
+                {
+                listVille.get( indexVille ).getNomVille(),
+                listVille.get( indexVille ).getPays() } );
+
         granted = ( muiNombreElementTable > ( int )current );
         if( granted )
         {
             //int i = getIndexTabVille( nomVille, nomPays );
-            if( indexVille > -1 )listVille.remove( indexVille );
+            if( current <= 0/*indexVille > -1*/ )listVille.remove( indexVille );
             else {
                 Log.d("---------------ERROR", "incohérence tableau Ville Table SQL\n");
                 return false;

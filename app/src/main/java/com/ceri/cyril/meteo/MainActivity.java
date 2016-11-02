@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -112,6 +111,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
             qslManager.supprVille( itemToDelete );
            // mTabVille.remove( itemToDelete );
             Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
+            qslManager.synchroSQLTab();
         }
         else {
             return false;
@@ -200,6 +200,8 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     {
 
         registerForContextMenu( listeVille );
+
+        Log.d("rafraichirVueListeVille", " -------------------------------------------------------------------strTab.rafraichirVueListeVille\n");
 
 
         ArrayList< String > strTab = new ArrayList<  >();

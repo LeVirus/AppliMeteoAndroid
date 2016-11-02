@@ -23,7 +23,7 @@ public class MeteoContentProvider extends ContentProvider
     public static final String TYPE_DIR =
             "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + QSLManager.strNomTable;
     public static final String TYPE_ITEM =
-            "vnd.android.cursor.item/vnd." + AUTHORITY + "." + QSLManager.strNomTable;
+            "vnd.android.cursor.item/vnd." + AUTHORITY + "." + QSLManager.strNomTable + "/*/*";
 
     QSLManager Bdd = null;
 
@@ -76,10 +76,10 @@ public class MeteoContentProvider extends ContentProvider
     public String getType(Uri uri)
     {
         if (sUriMatcher.match(uri) == 0) {
-            return(TYPE_DIR);
+            return TYPE_DIR;
         }
 
-        return(TYPE_ITEM);
+        return TYPE_ITEM;
     }
 
     @Override
