@@ -25,7 +25,10 @@
         <activity
             android:name=".CityView"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".PreferenceActivity"></activity>
+        <activity android:name=".PreferenceActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

@@ -1,4 +1,22 @@
 <resources>
+
+
+
+    <string-array name="DirVent">
+        <item>option1</item>
+        <item>option2</item>
+    </string-array>
+
+    <string-array name="VitVent">
+        <item>option1</item>
+        <item>option2</item>
+    </string-array>
+
+    <string-array name="Temp">
+        <item>option1</item>
+        <item>option2</item>
+    </string-array>
+
     <string name="app_name">Meteo</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"

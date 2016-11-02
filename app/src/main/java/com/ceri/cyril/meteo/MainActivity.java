@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter;
-    Button bouton = null;
     String ville = "", pays = "";
     static RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;

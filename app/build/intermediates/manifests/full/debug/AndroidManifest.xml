@@ -31,7 +31,10 @@
         <activity
             android:name="com.ceri.cyril.meteo.CityView"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ceri.cyril.meteo.PreferenceActivity" />
+        <activity
+            android:name="com.ceri.cyril.meteo.PreferenceActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
