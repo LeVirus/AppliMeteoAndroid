@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,15 +60,13 @@ public class MainActivity extends AppCompatActivity //implements Serializable
         listeVille = (ListView) findViewById(R.id.listView);
         if( Ville.refJsonResp == null)
             Ville.refJsonResp = new JSONResponseHandler();
-        entrerValDefaut();
+        //entrerValDefaut();
         if( queue == null)  queue = Volley.newRequestQueue( this );
         if( refreshTaskk == null )
         {
             refreshTaskk = new RefreshTask();
             refreshTaskk.memTabVille( qslManager.getAllCities(), this );
         }
-
-
 
         try
         {
@@ -136,13 +133,15 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.menu_refresh:
-                writeToast("test bouton 1");
-                // Comportement du bouton "Rafraichir"
+            case R.id.ajoutVille:
+                Intent intent = new Intent( mRefMainAct, AddCityActivity.class );
+                intent.putExtra("ville",  ville);
+                intent.putExtra("pays",  pays);
+                startActivity( intent );
                 return true;
-            case R.id.menu_search:
-                writeToast("test bouton 1");
-
+            case R.id.preference:
+                Intent intentt = new Intent( mRefMainAct, PreferenceActivity.class );
+                startActivity( intentt );
                 // Comportement du bouton "Recherche"
                 return true;
 
@@ -240,24 +239,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
      */
     void initBouton()
     {
-        bouton = (Button) findViewById(R.id.button);
-        bouton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                try {
-                    Intent intent = new Intent( mRefMainAct, AddCityActivity.class );
-                    intent.putExtra("ville",  ville);
-                    intent.putExtra("pays",  pays);
-                    startActivity( intent );
-                    //ville = ""; pays = "";
-                }catch (Exception e)
-                {
-                    Log.d("-------------------",e.toString() + " initBouton\n");
-                }
-            }
-        });
+
         actionBar = getSupportActionBar();
         actionBar.setTitle("Menu");
         actionBar.setDisplayHomeAsUpEnabled(true);

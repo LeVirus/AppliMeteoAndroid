@@ -27,12 +27,11 @@
         </activity>
         <activity
             android:name="com.ceri.cyril.meteo.AddCityActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ceri.cyril.meteo.CityView"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ceri.cyril.meteo.PreferenceActivity" />
     </application>
 
 </manifest>

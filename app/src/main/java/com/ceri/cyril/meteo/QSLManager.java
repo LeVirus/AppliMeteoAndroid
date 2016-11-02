@@ -17,14 +17,15 @@ import java.util.ArrayList;
 
 public class QSLManager extends SQLiteOpenHelper
 {
-    int muiNombreElementTable = 0;
+    int muiNombreElementTable;
     final int NOM_VILLE = 0,
             PAYS = 1,
             DATE_DERNIER_RELEVE = 2,
             TEMPERATURE = 3,
             VITESSE_VENT = 4,
-            PRESSION_ATMOS = 5,
-            CLE_PRIMAIRE = 6,
+            DIRECTION_VENT = 5,
+            PRESSION_ATMOS = 6,
+            CLE_PRIMAIRE = 7,
             TEXT = 0,
             INTEGER_PRIMARY_KEY = 1       ;
 
@@ -49,7 +50,9 @@ public class QSLManager extends SQLiteOpenHelper
     @Override
     public void onCreate( SQLiteDatabase sqLiteDatabase )
     {
+        sqliteDb = sqLiteDatabase;
         createTable( sqLiteDatabase );
+        synchroSQLTab();
     }
 
     void createTable( SQLiteDatabase sqLiteDatabase )
@@ -61,6 +64,7 @@ public class QSLManager extends SQLiteOpenHelper
                 CHAMP_TABLE[ DATE_DERNIER_RELEVE ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ TEMPERATURE ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ VITESSE_VENT ] + TYPE_CHAMP[ TEXT ] + "," +
+                CHAMP_TABLE[ DIRECTION_VENT ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ PRESSION_ATMOS ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ CLE_PRIMAIRE ] + TYPE_CHAMP[ INTEGER_PRIMARY_KEY ] + "," + //cle primaire
                     "UNIQUE " +
@@ -71,20 +75,6 @@ public class QSLManager extends SQLiteOpenHelper
                 ")"
         );
     }
-
-
-    /*
-    CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_WEATHER + "("
-				+ KEY_ID + " INTEGER PRIMARY KEY,"
-				+ KEY_COUNTRY + " TEXT,"
-				+ KEY_NAME + " TEXT,"
-				+ KEY_LAST_UPDATE + " TEXT,"
-				+ KEY_WIND + " TEXT,"
-				+ KEY_PRESSURE + " TEXT,"
-				+ KEY_TEMPERATURE + " TEXT,"
-				+ "UNIQUE(" + KEY_COUNTRY + "," + KEY_NAME + ")"
-+ ")";
-     */
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion)
@@ -110,17 +100,15 @@ public class QSLManager extends SQLiteOpenHelper
     public boolean ajoutVille( String nomVille, String nomPays )
     {
         boolean granted ;
-        //SQLiteDatabase mMemTable = getWritableDatabase();
+        synchroSQLTab();
 
-        if ( ! isTableExists( strNomTable, true ) )createTable( sqliteDb );
-
+        SQLiteDatabase table = getWritableDatabase();
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put( CHAMP_TABLE[ NOM_VILLE ] , nomVille);
         values.put( CHAMP_TABLE[ PAYS ] , nomPays);
 
-
-        long current = sqliteDb.insert( strNomTable, null, values);
+        long current = table.insert( strNomTable, null, values);
 
         granted = ( muiNombreElementTable < ( int )current );
         if( granted )
@@ -130,6 +118,43 @@ public class QSLManager extends SQLiteOpenHelper
         }
 
         return granted;
+
+    }
+
+    /**
+     * Récupération des données concernant les villes stockées dans la table SQL.
+     */
+    void synchroSQLTab()
+    {
+        SQLiteDatabase table = getWritableDatabase();
+
+
+            if (null == listVille) listVille = new ArrayList<>();
+            else listVille.clear();
+
+            Cursor curs = table.rawQuery("SELECT * FROM " + strNomTable, null);
+
+            muiNombreElementTable = curs.getCount();
+
+            //startManagingCursor(curs);
+            while ( curs.moveToNext() )
+            {
+                Log.d( "Synchro ::------------ ", curs.getString( NOM_VILLE ) + curs.getString( PAYS ) + "-------------------------------------");
+
+                float temp = Float.parseFloat( curs.getString( TEMPERATURE ) );
+                float vit = Float.parseFloat( curs.getString( VITESSE_VENT ) );
+                float atmos = Float.parseFloat( curs.getString( PRESSION_ATMOS ) );
+
+                Ville v = new Ville(curs.getString( NOM_VILLE ), curs.getString( PAYS ), curs.getString( DATE_DERNIER_RELEVE ),
+                        vit, curs.getString( DATE_DERNIER_RELEVE ), atmos, temp );
+
+                Log.d( "Synchro ::------------ ", curs.getString( NOM_VILLE ) + curs.getString( PAYS ) + "-------------------------------------");
+
+                //Ville( String nomVille, String pays, String dateDernierReleve,        float vitesseVent, String directionVent, float pressionAtmos, float temperature )
+                listVille.add( v );
+
+            }
+
     }
 
     public boolean supprVille( int indexVille )

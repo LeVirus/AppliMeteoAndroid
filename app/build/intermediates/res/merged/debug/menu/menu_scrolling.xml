@@ -4,12 +4,12 @@
     tools:context=".CityListActivity" >
 
     <item
-        android:id="@+id/menu_search"
+        android:id="@+id/ajoutVille"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:title="Ajouter Ville"/>
     <item
-        android:id="@+id/menu_refresh"
+        android:id="@+id/preference"
         android:orderInCategory="200"
         app:showAsAction="ifRoom"
         android:title="Préférences"/>
