@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class QSLManager extends SQLiteOpenHelper
 {
     int muiNombreElementTable;
-    final int NOM_VILLE = 0,
+     static int NOM_VILLE = 0,
             PAYS = 1,
             DATE_DERNIER_RELEVE = 2,
             TEMPERATURE = 3,
@@ -29,7 +29,7 @@ public class QSLManager extends SQLiteOpenHelper
             TEXT = 0,
             INTEGER_PRIMARY_KEY = 1       ;
 
-    String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "pressionAtmos", "clePrimaire" };
+    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "pressionAtmos", "clePrimaire" };
     String TYPE_CHAMP[] = { " TEXT", " INTEGER_PRIMARY_KEY"};
 
 
@@ -37,7 +37,7 @@ public class QSLManager extends SQLiteOpenHelper
     //private static DatabaseHelper instance;
     private static final int DATABASE_VERSION = 1;
 
-    static String strNomTable = "BDDMeteo";
+    public final static String strNomTable = "BDDMeteo";
     static ArrayList<Ville> listVille = new ArrayList<>();
 
     public QSLManager( Context context )
