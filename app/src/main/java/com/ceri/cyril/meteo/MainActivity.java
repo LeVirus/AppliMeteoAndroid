@@ -1,10 +1,15 @@
 package com.ceri.cyril.meteo;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -13,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,13 +41,19 @@ import static com.ceri.cyril.meteo.CityView.queue;
  * final Ville getConstVille( int positionVille )
  */
 
-public class MainActivity extends AppCompatActivity //implements Serializable
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> //implements Serializable
 {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
+    private static final int LOADER_ID = 0x01;
+    private TextView textView;
+
     int villeSelect = -1, itemToDelete = -1;
     //ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
     ArrayAdapter<String> listAdapter;
+
     String ville = "", pays = "";
     static RefreshTask refreshTaskk = null;
     JSONResponseHandler jsonResp = null;
@@ -53,8 +65,11 @@ public class MainActivity extends AppCompatActivity //implements Serializable
     {
         super.onCreate(savedInstanceState);
         if( null == qslManager )qslManager = new QSLManager( this );
-
         setContentView(R.layout.activity_main);
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) this);
+
+
         listeVille = (ListView) findViewById(R.id.listView);
         if( Ville.refJsonResp == null)
             Ville.refJsonResp = new JSONResponseHandler();
@@ -80,6 +95,7 @@ public class MainActivity extends AppCompatActivity //implements Serializable
         mRefMainAct = this;
 
         Log.d("-------------------","Application -------------------------------------------------------------------\n");
+
     }
 
     @Override
@@ -354,6 +370,31 @@ public class MainActivity extends AppCompatActivity //implements Serializable
             return null;
         }
         return qslManager.getAllCities().get( positionVille );
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader( int id, Bundle bundle )
+    {
+        return new CursorLoader(this, MeteoContentProvider.CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished( Loader<Cursor> loader, Cursor cursor )
+    {
+        /*cursor.moveToFirst();
+        String text = (String) textView.getText();
+        while (!cursor.isAfterLast()) {
+            text += "<br />" + cursor.getString(1);
+            cursor.moveToNext();
+        }
+        textView.setText(Html.fromHtml(text) );*/
+        //simpleCursorAdapter.changeCursor( cursor );
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
     }
 
 }
