@@ -29,7 +29,7 @@ public class QSLManager extends SQLiteOpenHelper
             TEXT = 0,
             INTEGER_PRIMARY_KEY = 1       ;
 
-    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "pressionAtmos", "clePrimaire" };
+    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos", "clePrimaire" };
     String TYPE_CHAMP[] = { " TEXT", " INTEGER_PRIMARY_KEY"};
 
 
@@ -198,6 +198,35 @@ public class QSLManager extends SQLiteOpenHelper
         return granted;
     }
 
+    public boolean supprVilleS( String ville, String pays )
+    {
+        SQLiteDatabase mMemTable = getWritableDatabase();
+
+        boolean granted ;
+        mMemTable = getWritableDatabase();
+
+        //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
+        String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
+
+
+        long current = mMemTable.delete(strNomTable, where, new String[] {ville, pays } );
+
+        granted = ( 0 != current );
+        if( granted )
+        {
+            int i = getIndexTabVille( ville, pays );
+            if( i > -1 )listVille.remove( i );
+
+            muiNombreElementTable--;
+        }
+
+        else
+                mMemTable.delete(strNomTable, null, null );//en cas de probleme effacer toute la table
+
+
+        return granted;
+    }
+
     /**
      * Renvoie l'index de la ville dont les paramètres correspondent au nom de la ville et du pays.
      * @return le numéro de l'index de la ville si cette dernière existe, -1 sinon.
@@ -207,9 +236,17 @@ public class QSLManager extends SQLiteOpenHelper
         Ville v;
         for(int i = 0; i < listVille.size(); ++i)
         {
-            v = listVille.get( i );
-            if( v.getNomVille().equals( nomVille ) &&
-                v.getPays().equals( nomPays ) )return i;
+            try
+            {
+                v = listVille.get( i );
+                if( v.getNomVille().equals( nomVille ) &&
+                        v.getPays().equals( nomPays ) )return i;
+            }catch (NullPointerException e)
+            {
+                Log.d("errrrrrrrrrrr", e.toString() );
+                return i;
+            }
+
         }
         return -1;
     }

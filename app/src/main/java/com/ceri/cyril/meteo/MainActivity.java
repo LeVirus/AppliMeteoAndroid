@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -60,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ActionBar actionBar = null;
     static QSLManager qslManager;
 
+    SimpleCursorAdapter simpleCursorAdapter;
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -67,7 +68,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if( null == qslManager )qslManager = new QSLManager( this );
         setContentView(R.layout.activity_main);
 
-        getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) this);
+
+        simpleCursorAdapter = new  SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, null,
+                new String[] { QSLManager.CHAMP_TABLE[ QSLManager.PAYS ], QSLManager.CHAMP_TABLE[ QSLManager.CLE_PRIMAIRE  ] },
+                new int[] { android.R.id.text1, android.R.id.text2 }, 0);
+
+        LoaderManager.LoaderCallbacks<? extends Object> load= this;
+
+        /*try
+        {
+            getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) load);
+        }catch (Exception e)
+        {
+            getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) load);
+
+        }*/
 
 
         listeVille = (ListView) findViewById(R.id.listView);
@@ -121,13 +136,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
+
+        ArrayList< Ville > list = qslManager.getAllCities();
+        String ville = list.get( itemToDelete ).getNomVille(),
+                pays = list.get( itemToDelete ).getPays();
+
+        try
+        {
+            getContentResolver().delete( MeteoContentProvider.getUriVille( ville , pays ), null, null);
+        }catch (Exception e)
+        {
+            getContentResolver().delete( MeteoContentProvider.getUriVille( ville , pays ), null, null);
+        }
+
         if (item.getTitle() == "Supprimer élément") {
             listAdapter.remove( listAdapter.getItem( itemToDelete ) );
             listAdapter.notifyDataSetChanged();
-            qslManager.supprVille( itemToDelete );
+
+
+
            // mTabVille.remove( itemToDelete );
             Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
-            qslManager.synchroSQLTab();
+
+            //qslManager.supprVille( itemToDelete );
+            //qslManager.synchroSQLTab();
         }
         else {
             return false;
@@ -204,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return false;
         }
 
-        return qslManager.ajoutVille( nomVille, nomPays );
+        getContentResolver().insert(MeteoContentProvider.getUriVille( nomVille, nomPays ), null);
+        return true;//qslManager.ajoutVille( nomVille, nomPays );
     }
 
 
@@ -390,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         textView.setText(Html.fromHtml(text) );*/
         //simpleCursorAdapter.changeCursor( cursor );
+        simpleCursorAdapter.changeCursor(cursor);
     }
 
     @Override

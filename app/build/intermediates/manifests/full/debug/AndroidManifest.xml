@@ -35,6 +35,13 @@
             android:name="com.ceri.cyril.meteo.PreferenceActivity"
             android:screenOrientation="portrait" >
         </activity>
+
+        <provider
+            android:name="com.ceri.cyril.meteo.MeteoContentProvider"
+            android:authorities="com.ceri.cyril.meteo.provider"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="true" />
     </application>
 
 </manifest>

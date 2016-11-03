@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import java.util.List;
+
 import static javax.xml.transform.OutputKeys.VERSION;
 
 /**
@@ -30,7 +32,10 @@ public class MeteoContentProvider extends ContentProvider
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
 
-    final static int URI_BDD = 0, URI_VILLE_BDD = 1;
+    final static int URI_BDD = 0,
+            URI_VILLE_BDD = 1,
+                    VILLE_SEGMENT = 1,
+            PAYS_SEGMENT = 2;
 
 
     public static final Uri CONTENT_URI = new Uri.Builder().scheme( ContentResolver.SCHEME_CONTENT )
@@ -40,10 +45,16 @@ public class MeteoContentProvider extends ContentProvider
 
     static
     {
-        sUriMatcher.addURI("com.example.app.provider", "BDDMeteo", URI_BDD);
-        sUriMatcher.addURI("com.example.app.provider", "BDDMeteo/", URI_VILLE_BDD);
+        sUriMatcher.addURI( AUTHORITY, "BDDMeteo", URI_BDD);
+        sUriMatcher.addURI( AUTHORITY, "BDDMeteo/*/*", URI_VILLE_BDD);
 
     }
+
+    public static Uri getUriVille( String ville, String pays )
+    {
+        return CONTENT_URI.buildUpon().appendPath( pays ).appendPath( ville ).build();
+    }
+
     @Override
     public boolean onCreate()
     {
@@ -55,21 +66,28 @@ public class MeteoContentProvider extends ContentProvider
     @Override
     public Uri insert(Uri url, ContentValues values)
     {
-        long id = Bdd.getWritableDatabase().insert( QSLManager.strNomTable,    QSLManager.CHAMP_TABLE[ QSLManager.INTEGER_PRIMARY_KEY ],    values );
-        if ( id > -1 ) {
-            Uri uri = ContentUris.withAppendedId( CONTENT_URI, id );
-            getContext().getContentResolver().notifyChange( uri, null );
-            return uri;
-        }
+        if ( sUriMatcher.match(url) != URI_VILLE_BDD )return null;
+        //long id = Bdd.getWritableDatabase().insert( QSLManager.strNomTable,    QSLManager.CHAMP_TABLE[ QSLManager.INTEGER_PRIMARY_KEY ],    values );
+        List< String > pathSegments = url.getPathSegments();
+        String pays = pathSegments.get(PAYS_SEGMENT);
+        String ville = pathSegments.get(VILLE_SEGMENT);
+        boolean b = Bdd.ajoutVille( pays, ville );
+        if ( b ) return getUriVille(  ville,  pays );
+
         return null;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        int count = Bdd.getWritableDatabase().delete(QSLManager.strNomTable, selection, selectionArgs);
+        if (sUriMatcher.match(uri) != URI_VILLE_BDD)return -1;
+
+        List< String > pathSegments = uri.getPathSegments();
+        String pays = pathSegments.get(PAYS_SEGMENT);
+        String ville = pathSegments.get(VILLE_SEGMENT);
+     Bdd.supprVilleS(pays, ville);
         getContext().getContentResolver().notifyChange(uri, null);
-        return count;
+        return 0;
     }
 
     @Override
