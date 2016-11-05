@@ -22,6 +22,7 @@ import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
 import static java.lang.System.in;
 import static java.lang.Thread.sleep;
 
@@ -50,6 +51,14 @@ public class CityView extends AppCompatActivity {
         recupBundle();
         ecrireInfoVilleUI();
         majButton();
+
+        try {
+            getWeather();
+        }catch (Exception e)
+        {
+            Log.d("-------------------",e.toString() + " oncreate\n");
+
+        }
 
 
     }
@@ -84,7 +93,7 @@ public class CityView extends AppCompatActivity {
                     getWeather();
                 }catch (Exception e)
                 {
-                    Log.d("-------------------",e.toString() + " refreshTask initBouton\n");
+                    Log.d("-------------------",e.toString() + " refreshTask\n");
 
                 }
             }
@@ -111,14 +120,26 @@ public class CityView extends AppCompatActivity {
 
     /**
      * Initialisation de la présentation graphique de la ville affichée et préparation de l'URL à envoyer au serveur Yahoo.
+     *
+     * getTempUnit()
+     {
+     return strUnitTemp;
+     }
+
+     public String getDirVentUnit()
+     {
+     return strUnitDirVent;
+     }
+
+     public String
      */
     void ecrireInfoVilleUI()
     {
         if( ville == null )return;
         tvVille.setText( "Ville     " + ville.getNomVille() );
         tvPays.setText( "Pays     " + ville.getPays()+"                        " );
-        tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + "\nVitesse vent   " + ville.getVitesseVent() );
-        tvTemperature.setText( "Temperature     "  + ville.getTemperature() );
+        tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + ville.getDirVentUnit() + "\nVitesse vent   " + ville.getVitesseVent() + ville.getVitVentUnit() );
+        tvTemperature.setText( "Temperature     "  + ville.getTemperature() + ville.getTempUnit());
         tvPression.setText( "Pression atmosphérique    "  + ville.getPressionAtmos() );
         tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );
         url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
@@ -165,7 +186,12 @@ class ResponseListener implements Response.Listener<String>
             try
             {
                 lstStr = Ville.refJsonResp.handleResponse(stream, "");
-                sendMajVille(  );
+                }catch (Exception e)
+            {
+                System.out.println(e.toString() + "sendMaj");
+            }
+            PreferenceActivity.sharedPref = ref.getApplicationContext().getSharedPreferences("Preferences", MODE_PRIVATE);
+            sendMajVille(  );
                 if( ref != null )
                 {
                     Log.d("-------------------","  Ecrire ville-------------------------------------------------------------------\n");
@@ -176,10 +202,7 @@ class ResponseListener implements Response.Listener<String>
                     ref = null;
                     MainActivity.refreshTaskk.writeToast("Mise à jour Terminée");
                 }
-            }catch (Exception e)
-            {
-                System.out.println(e.toString() + "sendMaj");
-            }
+
 
         }
 
@@ -213,9 +236,10 @@ class ResponseListener implements Response.Listener<String>
      */
     public void sendMajVille()
     {
+
+        String unitTemp = " °c",  unitDirVent = "",  unitVitVent = " km/h";
+
         if( ville == null )return;
-        try
-        {
             int cmpt = 0;
             float temp = 0, vent = 0, pression = 0;
             String date = "", dirVent = "";
@@ -241,14 +265,56 @@ class ResponseListener implements Response.Listener<String>
                 }
                 cmpt++;
             }
+            if( PreferenceActivity.getConfDirVent() == 1 )
+            {
+                dirVent = compass2deg( dirVent );
+                unitDirVent = " °";
+            }
+            if( PreferenceActivity.getConfVitVent() == 1 )
+            {
+                vent = kmh2mph( vent );
+                  unitVitVent = " mph";
+            }
+            if( PreferenceActivity.getConftemp() == 1 )
+            {
+                temp = celsius2farenheit( temp );
+                unitTemp = " F";
+            }
+        try
+        {
+            ville.configUnitVille(  unitTemp,  unitDirVent,  unitVitVent );//config des unités à afficher
             ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp );
             ref.majVille( ville );
 
         }catch (Exception e)
         {
-            Log.d("-------------------", e.toString() + "  Error-------------------------------------------------------------------\n");
-        }
+            Log.d("-------------------", e.toString() + " sendMajVille Error-------------------------------------------------------------------\n");
+       }
 
+    }
+
+    private float kmh2mph( float n )
+    {
+        return n * (float)1.609344;
+    }
+
+    private float celsius2farenheit(float f) {
+        return  f + 32.0f / (5.0f / 9.0f);
+    }
+
+    private String compass2deg( String deg ) {
+        String[] arrComp = {"(N)", "(NNE)", "(NE)", "(ENE)", "(E)", "(ESE)", "(SE)", "(SSE)", "(S)", "(SSW)", "(SW)", "(WSW)", "(W)", "(WNW)", "(NW)", "(NNW)"};
+        int cmpt = 0;
+        for( String i : arrComp )
+        {
+            Log.d("eeeeeeeeeeeeeeeeeeeeeee", i + "  " + deg + "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            if( i.equals(deg) )
+            {
+                return "" + (float)( cmpt * 22.5 );
+            }
+            cmpt++;
+        }
+        return "Err";
     }
 
 };

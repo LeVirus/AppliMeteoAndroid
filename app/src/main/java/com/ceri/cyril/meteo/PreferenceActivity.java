@@ -9,9 +9,9 @@ import android.widget.Spinner;
 
 public class PreferenceActivity extends AppCompatActivity {
 
-    Spinner spinDirVent, spinVitVent, spinTemp;
+    private static Spinner spinDirVent, spinVitVent, spinTemp;
     Button button;
-    SharedPreferences sharedPref;
+    static SharedPreferences sharedPref;
     SharedPreferences.Editor sharedPrefEditor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +28,16 @@ public class PreferenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 savePref();
-                if (getIntent().getBooleanExtra("EXIT", false))
-                {
+                //if (getIntent().getBooleanExtra("EXIT", false))
+                //{
                     finish();
-                }
+                //}
             }
         });
         spinDirVent = (Spinner) findViewById( R.id.spinnerDir );
         spinVitVent = (Spinner) findViewById( R.id.spinnerVit );
         spinTemp = (Spinner) findViewById( R.id.spinnerTemp );
-        sharedPref = getApplicationContext().getSharedPreferences("Preferences", MODE_PRIVATE);
+        earnConf();
         sharedPrefEditor = sharedPref.edit();
     }
 
@@ -52,6 +52,11 @@ public class PreferenceActivity extends AppCompatActivity {
         sharedPrefEditor.commit(); // commit changes
     }
 
+    void earnConf()
+    {
+        sharedPref = getApplicationContext().getSharedPreferences("Preferences", MODE_PRIVATE);
+    }
+
     void loadPref()
     {
 
@@ -63,7 +68,22 @@ public class PreferenceActivity extends AppCompatActivity {
             if( spinVitVent.getCount() > spinB )spinVitVent.setSelection( spinB );
             if( spinTemp.getCount() > spinC )spinTemp.setSelection( spinC );
 
+    }
 
+    public static int getConfDirVent()
+    {
+        return sharedPref.getInt( "spinDirVent", 0 );
+    }
+
+    public static int getConfVitVent()
+    {
+        return sharedPref.getInt( "spinVitVent", 0 );
+
+    }
+
+    public static int getConftemp()
+    {
+        return sharedPref.getInt( "spinTemp", 0 );
 
     }
 

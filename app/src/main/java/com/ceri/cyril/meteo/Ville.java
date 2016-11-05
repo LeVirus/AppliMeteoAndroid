@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by cyril on 25/09/16.
  */
 public class Ville implements Serializable{
-    private String mNomVille, mPays, mDateDernierReleve, mDirectionVent;
+    private String mNomVille, mPays, mDateDernierReleve, mDirectionVent,  strUnitTemp = "", strUnitDirVent = "", strUnitVitVent = "";
     private float mVitesseVent, mPressionAtmos, mTemperature;
     static JSONResponseHandler refJsonResp;
 
@@ -65,6 +65,29 @@ public class Ville implements Serializable{
         mPressionAtmos = pressionAtmos;
         mDateDernierReleve = dateDernierReleve;
         mTemperature = temperature;
+    }
+
+    public void configUnitVille( String temp, String dirVent, String vitVent )
+    {
+        strUnitTemp = temp;
+        strUnitDirVent = dirVent;
+        strUnitVitVent = vitVent;
+    }
+
+
+    public String getTempUnit()
+    {
+        return strUnitTemp;
+    }
+
+    public String getDirVentUnit()
+    {
+        return strUnitDirVent;
+    }
+
+    public String getVitVentUnit()
+    {
+        return strUnitVitVent;
     }
 
     /**

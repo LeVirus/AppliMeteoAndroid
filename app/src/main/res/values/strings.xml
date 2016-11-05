@@ -3,18 +3,18 @@
 
 
     <string-array name="DirVent">
-        <item>option1</item>
-        <item>option2</item>
+        <item>compass</item>
+        <item>deg</item>
     </string-array>
 
     <string-array name="VitVent">
-        <item>option1</item>
-        <item>option2</item>
+        <item>kmh</item>
+        <item>mph</item>
     </string-array>
 
     <string-array name="Temp">
-        <item>option1</item>
-        <item>option2</item>
+        <item>celsius</item>
+        <item>farenheit</item>
     </string-array>
 
     <string name="app_name">Meteo</string>
