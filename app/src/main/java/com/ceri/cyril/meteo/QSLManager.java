@@ -29,7 +29,7 @@ public class QSLManager extends SQLiteOpenHelper
             TEXT = 0,
             INTEGER_PRIMARY_KEY = 1       ;
 
-    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos", "clePrimaire" };
+    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos", "_id" };
     String TYPE_CHAMP[] = { " TEXT", " INTEGER_PRIMARY_KEY"};
 
 
@@ -53,7 +53,7 @@ public class QSLManager extends SQLiteOpenHelper
     {
         sqliteDb = sqLiteDatabase;
         createTable( sqLiteDatabase );
-        synchroSQLTab();
+        //synchroSQLTab();
     }
 
     void createTable( SQLiteDatabase sqLiteDatabase )
@@ -86,6 +86,11 @@ public class QSLManager extends SQLiteOpenHelper
 
         }
     }
+    public Cursor getAllCitiesCurs()
+    {
+        Cursor cursor = getWritableDatabase().rawQuery("select * from "+strNomTable, null);
+        return cursor;
+    }
 
     public ArrayList<Ville> getAllCities()
     {
@@ -117,6 +122,7 @@ public class QSLManager extends SQLiteOpenHelper
             listVille.add( new Ville( nomVille, nomPays, "dd",0.0f,"dd",0.0f,0.0f ) );
             muiNombreElementTable++;
         }
+        synchroSQLTab();
 
         return granted;
 

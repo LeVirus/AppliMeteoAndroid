@@ -257,6 +257,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Ajouter les villes graphiquement
         //if( null == qslManager )qslManager = new QSLManager( this );
 
+        Cursor cursor = qslManager.getAllCitiesCurs();
+        startManagingCursor(cursor);
+
+        Log.d("rafraichirVueListeVille", cursor.getCount() +" -------------------------------------------------------------------\n");
+
+        cursor.getCount();
+
+        //SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.list_example_entry, cursor, columns, to);
+/*        SimpleCursorAdapter adapter = new  SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_2, cursor,
+                new String[] { QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE], QSLManager.CHAMP_TABLE[ QSLManager.PAYS] },
+                new int[] { android.R.id.text1, android.R.id.text2 }, 0);
+        listeVille.setAdapter( adapter );*/
+
+
         ArrayList< Ville > arrayVille = qslManager.getAllCities();
         if( arrayVille.size() == 0 )return;
         for( Ville a : arrayVille )
