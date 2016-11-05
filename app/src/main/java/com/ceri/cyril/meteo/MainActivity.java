@@ -255,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         ArrayList< String > strTab = new ArrayList<  >();
         //Ajouter les villes graphiquement
+        Cursor cursor = getContentResolver().query(MeteoContentProvider.CONTENT_URI, null, null, null, null);
+
         //if( null == qslManager )qslManager = new QSLManager( this );
 
-        ArrayList< Ville > arrayVille = qslManager.getAllCities();
+        /*ArrayList< Ville > arrayVille = qslManager.getAllCities();
         if( arrayVille.size() == 0 )return;
         for( Ville a : arrayVille )
         {
@@ -268,17 +270,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             {
                 Log.d("rafraichirVueListeVille",e.toString() + " -------------------------------------------------------------------strTab.add\n");
             }
-        }
-            try
-            {
-                listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
-                // Set the ArrayAdapter as the ListView's adapter.
-                listeVille.setAdapter( listAdapter );
+        }*/
+            /*try
+            {*/
+               // listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
+                SimpleCursorAdapter adapter = new  SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, cursor,
+                        new String[] { QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE ], QSLManager.CHAMP_TABLE[ QSLManager.PAYS ] },
+                        new int[] { android.R.id.text1, android.R.id.text2 }, 0);
 
-            }catch (Exception e)
+                // Set the ArrayAdapter as the ListView's adapter.
+                listeVille.setAdapter( adapter );
+                //listeVille.setAdapter( listAdapter );
+
+            /*}catch (Exception e)
             {
                 Log.d("-------------------",e.toString() + " -------------------------------------------------------------------\n");
-            }
+            }*/
 
         initClickListenerListeView();
         initLongClickListenerListeView();

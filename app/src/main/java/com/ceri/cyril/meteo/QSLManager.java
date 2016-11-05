@@ -29,6 +29,9 @@ public class QSLManager extends SQLiteOpenHelper
             TEXT = 0,
             INTEGER_PRIMARY_KEY = 1       ;
 
+    String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
+
+
     public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos", "clePrimaire" };
     String TYPE_CHAMP[] = { " TEXT", " INTEGER_PRIMARY_KEY"};
 
@@ -85,6 +88,14 @@ public class QSLManager extends SQLiteOpenHelper
             onCreate( sqLiteDatabase );
 
         }
+    }
+
+    public Cursor getAllCitiesCurs()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        final String selectQuery = "SELECT * FROM " + strNomTable;
+
+        return db.rawQuery(selectQuery, null);
     }
 
     public ArrayList<Ville> getAllCities()
@@ -174,7 +185,6 @@ public class QSLManager extends SQLiteOpenHelper
         mMemTable = getWritableDatabase();
 
         //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
-        String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
 
 
         if( listVille.size() < indexVille )return false;
@@ -205,8 +215,6 @@ public class QSLManager extends SQLiteOpenHelper
         boolean granted ;
         mMemTable = getWritableDatabase();
 
-        //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
-        String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
 
 
         long current = mMemTable.delete(strNomTable, where, new String[] {ville, pays } );
@@ -249,6 +257,14 @@ public class QSLManager extends SQLiteOpenHelper
 
         }
         return -1;
+    }
+
+    public Cursor getCityCurs( String pays, String ville )
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        return db.query(strNomTable, null, this.where, new String[] { pays, ville },
+                null, null, null, null);
     }
 
 

@@ -105,14 +105,43 @@ public class MeteoContentProvider extends ContentProvider
     {
         //int checkUri = sUriMatcher.match( uri );
 
-        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+/*        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
         builder.setTables( QSLManager.strNomTable );
 
+
+
         Cursor c = builder.query(Bdd.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);
-        return c;
+        return c;*/
+
+        int match = sUriMatcher.match(uri);
+
+        Cursor result = null;
+
+        switch (match)
+        {
+            case URI_BDD:
+                result = Bdd.getAllCitiesCurs();
+                break;
+            case URI_VILLE_BDD:
+                List<String> pathSegments = uri.getPathSegments();
+                String country = pathSegments.get(PAYS_SEGMENT);
+                String name = pathSegments.get(VILLE_SEGMENT);
+
+                result = Bdd.getCityCurs(country, name);
+                break;
+            default:
+                return null;
+        }
+
+        result.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return result;
+
     }
+
+
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
