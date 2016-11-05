@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class MeteoContentProvider extends ContentProvider
     @Override
     public Uri insert(Uri url, ContentValues values)
     {
+        Log.d("sdfgfgdf", "xdddddddddddddddddddddddd");
+
         if ( sUriMatcher.match(url) != URI_VILLE_BDD )return null;
         //long id = Bdd.getWritableDatabase().insert( QSLManager.strNomTable,    QSLManager.CHAMP_TABLE[ QSLManager.INTEGER_PRIMARY_KEY ],    values );
         List< String > pathSegments = url.getPathSegments();
@@ -73,6 +76,7 @@ public class MeteoContentProvider extends ContentProvider
         String ville = pathSegments.get(VILLE_SEGMENT);
         boolean b = Bdd.ajoutVille( pays, ville );
         if ( b ) return getUriVille(  ville,  pays );
+        else         Log.d("sdfgfgdf", "buuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuug");
 
         return null;
     }
@@ -132,7 +136,7 @@ public class MeteoContentProvider extends ContentProvider
                 result = Bdd.getCityCurs(country, name);
                 break;
             default:
-                return null;
+                return  Bdd.getAllCitiesCurs();
         }
 
         result.setNotificationUri(getContext().getContentResolver(), uri);

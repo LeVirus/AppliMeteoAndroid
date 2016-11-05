@@ -18,21 +18,21 @@ import java.util.ArrayList;
 public class QSLManager extends SQLiteOpenHelper
 {
     int muiNombreElementTable;
-     static int NOM_VILLE = 0,
-            PAYS = 1,
-            DATE_DERNIER_RELEVE = 2,
-            TEMPERATURE = 3,
-            VITESSE_VENT = 4,
-            DIRECTION_VENT = 5,
-            PRESSION_ATMOS = 6,
-            CLE_PRIMAIRE = 7,
+     static int             CLE_PRIMAIRE = 0,
+             NOM_VILLE = 1,
+            PAYS = 2,
+            DATE_DERNIER_RELEVE = 3,
+            TEMPERATURE = 4,
+            VITESSE_VENT = 5,
+            DIRECTION_VENT = 6,
+            PRESSION_ATMOS = 7,
             TEXT = 0,
-            INTEGER_PRIMARY_KEY = 1       ;
+            INTEGER_PRIMARY_KEY = 1;
 
     String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
 
 
-    public static final String CHAMP_TABLE[] = { "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos", "clePrimaire" };
+    public static final String CHAMP_TABLE[] = { "_id", "nomVille", "pays", "dateDernierReleve", "temperature", "vitesseVent", "directionVent", "pressionAtmos" };
     String TYPE_CHAMP[] = { " TEXT", " INTEGER_PRIMARY_KEY"};
 
 
@@ -56,13 +56,14 @@ public class QSLManager extends SQLiteOpenHelper
     {
         sqliteDb = sqLiteDatabase;
         createTable( sqLiteDatabase );
-        synchroSQLTab();
+        //synchroSQLTab(sqliteDb);
     }
 
     void createTable( SQLiteDatabase sqLiteDatabase )
     {
         sqLiteDatabase.execSQL( "CREATE TABLE IF NOT EXISTS " + strNomTable +
                 "(" +
+                CHAMP_TABLE[ CLE_PRIMAIRE ] + TYPE_CHAMP[ INTEGER_PRIMARY_KEY ] + "," +
                 CHAMP_TABLE[ NOM_VILLE ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ PAYS ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ DATE_DERNIER_RELEVE ] + TYPE_CHAMP[ TEXT ] + "," +
@@ -70,7 +71,6 @@ public class QSLManager extends SQLiteOpenHelper
                 CHAMP_TABLE[ VITESSE_VENT ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ DIRECTION_VENT ] + TYPE_CHAMP[ TEXT ] + "," +
                 CHAMP_TABLE[ PRESSION_ATMOS ] + TYPE_CHAMP[ TEXT ] + "," +
-                CHAMP_TABLE[ CLE_PRIMAIRE ] + TYPE_CHAMP[ INTEGER_PRIMARY_KEY ] + "," + //cle primaire
                     "UNIQUE " +
                     "(" +
                     CHAMP_TABLE[ NOM_VILLE ] + "," +
@@ -111,6 +111,9 @@ public class QSLManager extends SQLiteOpenHelper
      */
     public boolean ajoutVille( String nomVille, String nomPays )
     {
+
+        Log.d("ajoutVille", "xdddddddddddddddddddddddd");
+
         boolean granted ;
         synchroSQLTab();
 
@@ -128,7 +131,7 @@ public class QSLManager extends SQLiteOpenHelper
             listVille.add( new Ville( nomVille, nomPays, "dd",0.0f,"dd",0.0f,0.0f ) );
             muiNombreElementTable++;
         }
-
+        else Log.d("ajoutVille", "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
         return granted;
 
     }
@@ -136,16 +139,19 @@ public class QSLManager extends SQLiteOpenHelper
     /**
      * Récupération des données concernant les villes stockées dans la table SQL.
      */
-    void synchroSQLTab()
+    void synchroSQLTab( )
     {
         float temp = 100000, vit = 100000, atmos = 100000;
-        SQLiteDatabase table = getWritableDatabase();
 
+            sqliteDb = getWritableDatabase();
+
+
+if( sqliteDb == null )Log.d("sdfgfgdf", "fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuucj");
 
             if (null == listVille) listVille = new ArrayList<>();
             else listVille.clear();
 
-            Cursor curs = table.rawQuery("SELECT * FROM " + strNomTable, null);
+            Cursor curs = sqliteDb.rawQuery("SELECT * FROM " + strNomTable, null);
 
             muiNombreElementTable = curs.getCount();
 
