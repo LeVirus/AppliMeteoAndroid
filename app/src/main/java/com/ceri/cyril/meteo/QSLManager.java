@@ -35,7 +35,7 @@ public class QSLManager extends SQLiteOpenHelper
 
     private static SQLiteDatabase sqliteDb;
     //private static DatabaseHelper instance;
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public final static String strNomTable = "BDDMeteo";
     static ArrayList<Ville> listVille = new ArrayList<>();

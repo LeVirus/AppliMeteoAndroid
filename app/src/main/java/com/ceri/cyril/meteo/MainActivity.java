@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
-    ArrayAdapter<String> listAdapter;
+    //ArrayAdapter<String> listAdapter;
 
     String ville = "", pays = "";
     static RefreshTask refreshTaskk = null;
@@ -149,11 +149,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             getContentResolver().delete( MeteoContentProvider.getUriVille( ville , pays ), null, null);
         }
 
-        if (item.getTitle() == "Supprimer élément") {
-            listAdapter.remove( listAdapter.getItem( itemToDelete ) );
-            listAdapter.notifyDataSetChanged();
+        if (item.getTitle() == "Supprimer élément")
+        {
+            Log.d("-------------------",itemToDelete + " Supprimer\n");
+            /*listAdapter.remove( listAdapter.getItem( itemToDelete ) );
+            listAdapter.notifyDataSetChanged();*/
+            //simpleCursorAdapter.r
 
-
+            rafraichirVueListeVille();
 
            // mTabVille.remove( itemToDelete );
             Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
@@ -201,7 +204,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void writeToast(final String s){
         Log.d("TapisJeu", "C: Connecting...");
-        runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable()
+        {
             public void run() {
 
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
@@ -265,11 +269,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         cursor.getCount();
 
         //SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.list_example_entry, cursor, columns, to);
-/*        SimpleCursorAdapter adapter = new  SimpleCursorAdapter(this,
+        SimpleCursorAdapter adapter = new  SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, cursor,
                 new String[] { QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE], QSLManager.CHAMP_TABLE[ QSLManager.PAYS] },
                 new int[] { android.R.id.text1, android.R.id.text2 }, 0);
-        listeVille.setAdapter( adapter );*/
+        listeVille.setAdapter( adapter );
 
 
         ArrayList< Ville > arrayVille = qslManager.getAllCities();
@@ -284,16 +288,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.d("rafraichirVueListeVille",e.toString() + " -------------------------------------------------------------------strTab.add\n");
             }
         }
-            try
+            /*try
             {
-                listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
+                //listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
                 // Set the ArrayAdapter as the ListView's adapter.
-                listeVille.setAdapter( listAdapter );
+                //listeVille.setAdapter( listAdapter );
 
             }catch (Exception e)
             {
                 Log.d("-------------------",e.toString() + " -------------------------------------------------------------------\n");
-            }
+            }*/
 
         initClickListenerListeView();
         initLongClickListenerListeView();
@@ -430,14 +434,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished( Loader<Cursor> loader, Cursor cursor )
     {
-        /*cursor.moveToFirst();
-        String text = (String) textView.getText();
-        while (!cursor.isAfterLast()) {
-            text += "<br />" + cursor.getString(1);
-            cursor.moveToNext();
-        }
-        textView.setText(Html.fromHtml(text) );*/
-        //simpleCursorAdapter.changeCursor( cursor );
         simpleCursorAdapter.changeCursor(cursor);
     }
 
