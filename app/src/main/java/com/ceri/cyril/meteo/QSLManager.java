@@ -128,6 +128,12 @@ public class QSLManager extends SQLiteOpenHelper
 
     }
 
+    int updateBdd(String ville, String pays, ContentValues values)
+    {
+        String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
+        return getWritableDatabase().update(strNomTable, values, where, new String[] { pays, ville });
+    }
+
     /**
      * Récupération des données concernant les villes stockées dans la table SQL.
      */

@@ -1,31 +1,33 @@
 package com.ceri.cyril.meteo;
 
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.FloatBuffer;
-import java.nio.charset.StandardCharsets;
+
 import java.util.List;
 
-import static java.lang.System.in;
-import static java.lang.Thread.sleep;
 
-public class CityView extends AppCompatActivity {
+public class CityView extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>
+{
 
     Ville ville;
     int index = -1;
@@ -36,6 +38,7 @@ public class CityView extends AppCompatActivity {
     static RequestQueue queue = null;
     static ErrResp errReq = null;
     static ResponseListener respList = null;
+    static MainActivity refMainAct;
     CityView refThis = null;
 
 
@@ -49,8 +52,22 @@ public class CityView extends AppCompatActivity {
         recupRefTextView();
         recupBundle();
         ecrireInfoVilleUI();
+        getWeather();
+
         majButton();
 
+
+    }
+
+    void launchLoader()
+    {
+        Intent intent = getIntent();
+        Uri uri = intent.getParcelableExtra(MeteoContentProvider.AUTHORITY);
+        //account = intent.getParcelableExtra(CityListActivity.ACCOUNT);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MeteoContentProvider.AUTHORITY, uri);
+        getLoaderManager().initLoader(1, bundle, this);
 
     }
 
@@ -67,6 +84,11 @@ public class CityView extends AppCompatActivity {
         tvDate = (TextView) findViewById( R.id.Date );
         buttonRefresh = (Button) findViewById( R.id.button4 );
 
+    }
+
+    static void giveRef( MainActivity main )
+    {
+        refMainAct = main;
     }
 
     /**
@@ -138,6 +160,7 @@ public class CityView extends AppCompatActivity {
         respList.giveRefView( refThis );
         //req = new StringRequest(Request.Method.GET, url, respList, errReq );
         MainActivity.refreshTaskk.doInBackground( index );
+        launchLoaderz();//a corriger
 
         //queue.add( req );
 
@@ -146,6 +169,48 @@ public class CityView extends AppCompatActivity {
     public void majVille( Ville a )
     {
         ville = a;
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle)
+    {
+        return new CursorLoader(this, (Uri)bundle.getParcelable(MeteoContentProvider.AUTHORITY), null,
+                null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+    {
+        /**
+         * tvVille.setText( "Ville     " + ville.getNomVille() );
+         tvPays.setText( "Pays     " + ville.getPays()+"                        " );
+         tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + "\nVitesse vent   " + ville.getVitesseVent() );
+         tvTemperature.setText( "Temperature     "  + ville.getTemperature() );
+         tvPression.setText( "Pression atmosphérique    "  + ville.getPressionAtmos() );
+         tvDate.setT
+         */
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            tvVille.setText( cursor.getString( cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE] ) ) );
+
+            tvPays.setText(cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.PAYS ] )));
+
+            tvVent.setText( cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.VITESSE_VENT] )) +
+            "  " + cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT] )) );
+
+            tvTemperature.setText(cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE] )));
+
+            tvPression.setText(cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS] )));
+
+            tvDate.setText(cursor.getString(cursor.getColumnIndex( QSLManager.CHAMP_TABLE[ QSLManager.DATE_DERNIER_RELEVE] )));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
     }
 }
 
@@ -242,12 +307,28 @@ class ResponseListener implements Response.Listener<String>
                 cmpt++;
             }
             ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp );
+            majBdd();
+
+
             ref.majVille( ville );
 
         }catch (Exception e)
         {
             Log.d("-------------------", e.toString() + "  Error-------------------------------------------------------------------\n");
         }
+
+    }
+
+    void majBdd()
+    {
+        ContentValues values = new ContentValues();
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE ] , ville.getNomVille() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.PAYS ] , ville.getPays() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE ] , ville.getTemperature() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT ] , ville.getDirectionVent() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS ] , ville.getPressionAtmos() );
+        CityView.refMainAct.uapdateBdd( values, ville.getNomVille(), ville.getPays() );
+
 
     }
 

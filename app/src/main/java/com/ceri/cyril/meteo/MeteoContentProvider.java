@@ -117,7 +117,13 @@ public class MeteoContentProvider extends ContentProvider
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
     {
-        int count = Bdd.getWritableDatabase().update(QSLManager.strNomTable, values, selection, selectionArgs);
+        if (sUriMatcher.match(uri) != URI_VILLE_BDD)return -1;
+
+        List< String > pathSegments = uri.getPathSegments();
+        String pays = pathSegments.get(PAYS_SEGMENT);
+        String ville = pathSegments.get(VILLE_SEGMENT);
+
+        int count = Bdd.updateBdd(  ville,  pays, values );
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }

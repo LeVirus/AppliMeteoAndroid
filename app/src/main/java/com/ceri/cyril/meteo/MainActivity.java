@@ -1,6 +1,7 @@
 package com.ceri.cyril.meteo;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate(savedInstanceState);
+        CityView.giveRef( this );
+
         if( null == qslManager )qslManager = new QSLManager( this );
         setContentView(R.layout.activity_main);
 
@@ -218,7 +221,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     void entrerValDefaut()
     {
-
         //String nomVille, String pays, int dateDernierReleve, int vitesseVent, int directionVent, int pressionAtmos, float temperature
     qslManager.ajoutVille( "Paris", "France" );
     qslManager.ajoutVille( "Brest", "France" );
@@ -369,6 +371,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+    }
+
+    void uapdateBdd( ContentValues values, String nomVille, String nomPays )
+    {
+
+        try {
+            getContentResolver().update(MeteoContentProvider.getUriVille( nomVille, nomPays ), values, null, null);
+        }
+        catch (Exception e) {
+        }
     }
 
 
