@@ -136,13 +136,37 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
      */
     void ecrireInfoVilleUI()
     {
-        if( ville == null )return;
+        String[] str = {QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE], QSLManager.CHAMP_TABLE[ QSLManager.PAYS],
+                QSLManager.CHAMP_TABLE[ QSLManager.VITESSE_VENT], QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT], QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE]
+        , QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS], QSLManager.CHAMP_TABLE[ QSLManager.DATE_DERNIER_RELEVE] };
+
+        Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
+                str, null, null, null);
+
+        if( cursor == null )return;
+        cursor.moveToFirst();
+
+        try {
+            tvVille.setText( "Ville     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.NOM_VILLE])) );
+            tvPays.setText( "Pays     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PAYS])));
+            tvVent.setText("Vitesse vent     "+cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.VITESSE_VENT])) +
+                    "\nDirection Vent     "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.DIRECTION_VENT])));
+            tvTemperature.setText( "Temperature       "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.TEMPERATURE])));
+            tvPression.setText( "Pression atmosphérique    "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PRESSION_ATMOS])));
+            tvDate.setText( "Date     "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.DATE_DERNIER_RELEVE])));
+        }catch (Exception e)
+        {
+         Log.d("---------------------", e.toString() );
+        }
+
+
+        /*if( ville == null )return;
         tvVille.setText( "Ville     " + ville.getNomVille() );
         tvPays.setText( "Pays     " + ville.getPays()+"                        " );
         tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + "\nVitesse vent   " + ville.getVitesseVent() );
         tvTemperature.setText( "Temperature     "  + ville.getTemperature() );
         tvPression.setText( "Pression atmosphérique    "  + ville.getPressionAtmos() );
-        tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );
+        tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );*/
         url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
                 ville.getNomVille() + "%2C%20fr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
     }
@@ -160,7 +184,7 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
         respList.giveRefView( refThis );
         //req = new StringRequest(Request.Method.GET, url, respList, errReq );
         MainActivity.refreshTaskk.doInBackground( index );
-        launchLoaderz();//a corriger
+        //launchLoader();//a corriger
 
         //queue.add( req );
 
