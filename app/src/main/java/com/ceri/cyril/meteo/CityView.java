@@ -5,10 +5,12 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -140,7 +142,31 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
                 QSLManager.CHAMP_TABLE[ QSLManager.VITESSE_VENT], QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT], QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE]
         , QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS], QSLManager.CHAMP_TABLE[ QSLManager.DATE_DERNIER_RELEVE] };
 
-        Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
+        String unitDirectVent = "", unitTemp = " °c", unitvitVent = " mph";
+
+
+        SharedPreferences sharedPref = CityView.refMainAct.getApplicationContext().getSharedPreferences("Preferences", 0);
+        int spinA = sharedPref.getInt( "spinDirVent", 0 ),
+                spinB = sharedPref.getInt( "spinVitVent", 0 ),
+                spinC = sharedPref.getInt( "spinTemp", 0 );
+        //convertir cardinaux en degré
+        if(spinA == 1)
+        {
+            unitDirectVent = " °";
+        }
+        //vit vent
+        if(spinB == 1)
+        {
+            unitvitVent = " km/h";
+        }
+        //température
+        if(spinC == 1)
+        {
+            unitTemp = " f";
+        }
+
+
+        /*Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
                 str, null, null, null);
 
         if( cursor == null )return;
@@ -157,19 +183,22 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
         }catch (Exception e)
         {
          Log.d("---------------------", e.toString() );
-        }
+        }*/
 
 
-        /*if( ville == null )return;
+
+        if( ville == null )return;
         tvVille.setText( "Ville     " + ville.getNomVille() );
         tvPays.setText( "Pays     " + ville.getPays()+"                        " );
-        tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + "\nVitesse vent   " + ville.getVitesseVent() );
-        tvTemperature.setText( "Temperature     "  + ville.getTemperature() );
+        tvVent.setText( "Direction Vent     "  + ville.getDirectionVent() + unitDirectVent + "\nVitesse vent   " + ville.getVitesseVent() + unitvitVent);
+        tvTemperature.setText( "Temperature     "  + ville.getTemperature() + unitTemp );
         tvPression.setText( "Pression atmosphérique    "  + ville.getPressionAtmos() );
-        tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );*/
+        tvDate.setText( "Date     "  + ville.getDateDerniereMaj() );
         url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" +
                 ville.getNomVille() + "%2C%20fr%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
     }
+
+
 
 
     /**
@@ -330,7 +359,12 @@ class ResponseListener implements Response.Listener<String>
                 }
                 cmpt++;
             }
+
+
             ville.configVille( ville.getNomVille(), ville.getPays(), date, vent, dirVent, pression, temp );
+
+            applyPref();
+
             majBdd();
 
 
@@ -343,13 +377,56 @@ class ResponseListener implements Response.Listener<String>
 
     }
 
+    void applyPref()
+    {
+        SharedPreferences sharedPref = CityView.refMainAct.getApplicationContext().getSharedPreferences("Preferences", 0);
+
+        int spinA = sharedPref.getInt( "spinDirVent", 0 ),
+                spinB = sharedPref.getInt( "spinVitVent", 0 ),
+                spinC = sharedPref.getInt( "spinTemp", 0 );
+
+        //valeur par défaut
+        String dirVent = ville.getDirectionVent();
+        float vitVent = ville.getVitesseVent(), temp = ville.getTemperature();
+
+        //convertir cardinaux en degré
+        if(spinA == 1)
+        {
+            String[] arrComp = {"(N)", "(NNE)", "(NE)", "(ENE)", "(E)", "(ESE)", "(SE)", "(SSE)", "(S)", "(SSW)", "(SW)", "(WSW)", "(W)", "(WNW)", "(NW)", "(NNW)"};
+            int i;
+            for( i = 0;i<arrComp.length;++i )
+            {
+                if(arrComp[i].equals(ville.getDirectionVent()))
+                {
+                    float a = 360.0f / 16.0f * i;
+                    dirVent = String.valueOf((float)a);
+                    break;
+                }
+            }
+        }
+
+        //vit vent
+        if(spinB == 1)
+        {
+            vitVent = ville.getVitesseVent() * 1.609344f;
+        }
+
+        //température
+        if(spinC == 1)
+        {
+            temp = ville.getTemperature() + 32.0f/(5.0f / 9.0f);
+        }
+        ville.configVille( ville.getNomVille(), ville.getPays(), ville.getDateDerniereMaj(), vitVent, dirVent, ville.getPressionAtmos(), temp );
+    }
+
     void majBdd()
     {
         ContentValues values = new ContentValues();
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE ] , ville.getNomVille() );
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.PAYS ] , ville.getPays() );
-        values.put( QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE ] , ville.getTemperature() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.TEMPERATURE ] , "" + ville.getTemperature() );
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT ] , ville.getDirectionVent() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.VITESSE_VENT ] , "" + ville.getDirectionVent() );
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS ] , ville.getPressionAtmos() );
         CityView.refMainAct.uapdateBdd( values, ville.getNomVille(), ville.getPays() );
 

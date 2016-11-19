@@ -11,7 +11,7 @@ public class PreferenceActivity extends AppCompatActivity {
 
     Spinner spinDirVent, spinVitVent, spinTemp;
     Button button;
-    SharedPreferences sharedPref;
+    static SharedPreferences sharedPref;
     SharedPreferences.Editor sharedPrefEditor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class PreferenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 savePref();
-                if (getIntent().getBooleanExtra("EXIT", false))
+                if (getIntent().getBooleanExtra("EXIT", true))
                 {
                     finish();
                 }
