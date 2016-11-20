@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -49,10 +48,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private TextView textView;
 
     int villeSelect = -1, itemToDelete = -1;
-    //ArrayList<Ville> mTabVille = null;
     ListView listeVille = null;
     MainActivity mRefMainAct = null;
-    //ArrayAdapter<String> listAdapter;
 
     String ville = "", pays = "";
     static RefreshTask refreshTaskk = null;
@@ -77,15 +74,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new int[] { android.R.id.text1, android.R.id.text2 }, 0);
 
         LoaderManager.LoaderCallbacks<? extends Object> load= this;
-
-        /*try
-        {
-            getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) load);
-        }catch (Exception e)
-        {
-            getSupportLoaderManager().initLoader(LOADER_ID, null, (android.support.v4.app.LoaderManager.LoaderCallbacks<? extends Object>) load);
-
-        }*/
 
 
         listeVille = (ListView) findViewById(R.id.listView);
@@ -155,17 +143,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (item.getTitle() == "Supprimer élément")
         {
             Log.d("-------------------",itemToDelete + " Supprimer\n");
-            /*listAdapter.remove( listAdapter.getItem( itemToDelete ) );
-            listAdapter.notifyDataSetChanged();*/
-            //simpleCursorAdapter.r
+
 
             rafraichirVueListeVille();
 
-           // mTabVille.remove( itemToDelete );
             Toast.makeText(this, "Elémént supprimé" , Toast.LENGTH_SHORT).show();
 
-            //qslManager.supprVille( itemToDelete );
-            //qslManager.synchroSQLTab();
         }
         else {
             return false;
@@ -243,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         getContentResolver().insert(MeteoContentProvider.getUriVille( nomVille, nomPays ), null);
-        return true;//qslManager.ajoutVille( nomVille, nomPays );
+        return true;
     }
 
 
@@ -260,8 +243,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         ArrayList< String > strTab = new ArrayList<  >();
-        //Ajouter les villes graphiquement
-        //if( null == qslManager )qslManager = new QSLManager( this );
 
         Cursor cursor = qslManager.getAllCitiesCurs();
         startManagingCursor(cursor);
@@ -270,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         cursor.getCount();
 
-        //SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.list_example_entry, cursor, columns, to);
         SimpleCursorAdapter adapter = new  SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_2, cursor,
                 new String[] { QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE], QSLManager.CHAMP_TABLE[ QSLManager.PAYS] },
@@ -290,16 +270,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.d("rafraichirVueListeVille",e.toString() + " -------------------------------------------------------------------strTab.add\n");
             }
         }
-            /*try
-            {
-                //listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, strTab);
-                // Set the ArrayAdapter as the ListView's adapter.
-                //listeVille.setAdapter( listAdapter );
 
-            }catch (Exception e)
-            {
-                Log.d("-------------------",e.toString() + " -------------------------------------------------------------------\n");
-            }*/
 
         initClickListenerListeView();
         initLongClickListenerListeView();

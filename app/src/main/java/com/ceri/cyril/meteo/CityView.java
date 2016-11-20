@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -65,7 +64,6 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
     {
         Intent intent = getIntent();
         Uri uri = intent.getParcelableExtra(MeteoContentProvider.AUTHORITY);
-        //account = intent.getParcelableExtra(CityListActivity.ACCOUNT);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(MeteoContentProvider.AUTHORITY, uri);
@@ -165,14 +163,16 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
             unitTemp = " f";
         }
 
+        String where = QSLManager.CHAMP_TABLE[ QSLManager.NOM_VILLE ] + "=? AND " + QSLManager.CHAMP_TABLE[ QSLManager.PAYS ] + "=?";
 
-        Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
-                str, null, null, null);
+        /*Cursor cursor = refMainAct.getContentResolver().query(
+                MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
+                str,  null, null, null );
 
         if( cursor == null )return;
         cursor.moveToFirst();
 
-        /*try {
+        try {
             tvVille.setText( "Ville     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.NOM_VILLE])) );
             tvPays.setText( "Pays     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PAYS])) );
             tvVent.setText("Vitesse vent     "+cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.VITESSE_VENT])) +
@@ -211,11 +211,8 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
         if(null == respList)respList = new ResponseListener();
         respList.giveRefVille( ville );
         respList.giveRefView( refThis );
-        //req = new StringRequest(Request.Method.GET, url, respList, errReq );
         MainActivity.refreshTaskk.doInBackground( index );
-        //launchLoader();//a corriger
 
-        //queue.add( req );
 
     }
 

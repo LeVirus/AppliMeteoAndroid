@@ -3,15 +3,10 @@ package com.ceri.cyril.meteo;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
-
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static com.ceri.cyril.meteo.CityView.errReq;
 import static com.ceri.cyril.meteo.CityView.queue;
 import static com.ceri.cyril.meteo.CityView.req;
@@ -48,7 +43,6 @@ import static com.ceri.cyril.meteo.CityView.respList;
             return a;
         }
 
-        //Lock lock = new ReentrantLock();
 
 Ville v = tabVille.get(indexVille);
 
@@ -75,7 +69,5 @@ public void memTabVille( ArrayList<Ville> memTab, MainActivity mainn )
     main.writeToast(g);
 }
 
-
-    //URL urlYahoo = new URL("http://weather.yahooapis.com/forecastrss?w=woeid&u=unit");
 
 }

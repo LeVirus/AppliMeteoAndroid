@@ -2,17 +2,14 @@ package com.ceri.cyril.meteo;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import java.util.List;
 
-import static javax.xml.transform.OutputKeys.VERSION;
 
 /**
  * Created by cyril on 02/11/16.
@@ -67,7 +64,6 @@ public class MeteoContentProvider extends ContentProvider
     public Uri insert(Uri url, ContentValues values)
     {
         if ( sUriMatcher.match(url) != URI_VILLE_BDD )return null;
-        //long id = Bdd.getWritableDatabase().insert( QSLManager.strNomTable,    QSLManager.CHAMP_TABLE[ QSLManager.INTEGER_PRIMARY_KEY ],    values );
         List< String > pathSegments = url.getPathSegments();
         String pays = pathSegments.get(PAYS_SEGMENT);
         String ville = pathSegments.get(VILLE_SEGMENT);
@@ -103,8 +99,6 @@ public class MeteoContentProvider extends ContentProvider
     @Override
     public Cursor query( Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder )
     {
-        //int checkUri = sUriMatcher.match( uri );
-
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
         builder.setTables( QSLManager.strNomTable );

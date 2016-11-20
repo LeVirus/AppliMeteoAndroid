@@ -53,7 +53,6 @@ public class QSLManager extends SQLiteOpenHelper
     {
         sqliteDb = sqLiteDatabase;
         createTable( sqLiteDatabase );
-        //synchroSQLTab();
     }
 
     void createTable( SQLiteDatabase sqLiteDatabase )
@@ -150,7 +149,6 @@ public class QSLManager extends SQLiteOpenHelper
 
             muiNombreElementTable = curs.getCount();
 
-            //startManagingCursor(curs);
             while ( curs.moveToNext() )
             {
                 Log.d( "Synchro ::------------ ", curs.getString( NOM_VILLE ) + curs.getString( PAYS ) + "-------------------------------------");
@@ -171,7 +169,6 @@ public class QSLManager extends SQLiteOpenHelper
 
                 Log.d( "Synchro ::------------ ", curs.getString( NOM_VILLE ) + curs.getString( PAYS ) + "-------------------------------------");
 
-                //Ville( String nomVille, String pays, String dateDernierReleve,        float vitesseVent, String directionVent, float pressionAtmos, float temperature )
                 listVille.add( v );
 
             }
@@ -185,12 +182,10 @@ public class QSLManager extends SQLiteOpenHelper
         boolean granted ;
         mMemTable = getWritableDatabase();
 
-        //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
         String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
 
 
         if( listVille.size() < indexVille )return false;
-        //long current = mMemTable.delete( strNomTable, where, null);
         long current = mMemTable.delete(strNomTable, where, new String[]
                 {
                 listVille.get( indexVille ).getNomVille(),
@@ -199,8 +194,7 @@ public class QSLManager extends SQLiteOpenHelper
         granted = ( muiNombreElementTable > ( int )current );
         if( granted )
         {
-            //int i = getIndexTabVille( nomVille, nomPays );
-            if( current <= 0/*indexVille > -1*/ )listVille.remove( indexVille );
+            if( current <= 0 )listVille.remove( indexVille );
             else {
                 Log.d("---------------ERROR", "incohérence tableau Ville Table SQL\n");
                 return false;
@@ -217,7 +211,6 @@ public class QSLManager extends SQLiteOpenHelper
         boolean granted ;
         mMemTable = getWritableDatabase();
 
-        //String where = CHAMP_TABLE[ INTEGER_PRIMARY_KEY ] + "=" + indexVille ;
         String where = CHAMP_TABLE[ NOM_VILLE ] + "=? AND " + CHAMP_TABLE[ PAYS ] + "=?";
 
 
