@@ -166,18 +166,18 @@ public class CityView extends AppCompatActivity implements LoaderManager.LoaderC
         }
 
 
-        /*Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
+        Cursor cursor = refMainAct.getContentResolver().query( MeteoContentProvider.getUriVille( ville.getNomVille() , ville.getPays() ),
                 str, null, null, null);
 
         if( cursor == null )return;
         cursor.moveToFirst();
 
-        try {
+        /*try {
             tvVille.setText( "Ville     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.NOM_VILLE])) );
-            tvPays.setText( "Pays     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PAYS])));
+            tvPays.setText( "Pays     " + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PAYS])) );
             tvVent.setText("Vitesse vent     "+cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.VITESSE_VENT])) +
-                    "\nDirection Vent     "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.DIRECTION_VENT])));
-            tvTemperature.setText( "Temperature       "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.TEMPERATURE])));
+                     unitDirectVent +"\nDirection Vent     "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.DIRECTION_VENT])) + unitvitVent);
+            tvTemperature.setText( "Temperature       "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.TEMPERATURE])) + unitTemp );
             tvPression.setText( "Pression atmosphérique    "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.PRESSION_ATMOS])));
             tvDate.setText( "Date     "  + cursor.getString(cursor.getColumnIndex(QSLManager.CHAMP_TABLE[QSLManager.DATE_DERNIER_RELEVE])));
         }catch (Exception e)
@@ -428,6 +428,7 @@ class ResponseListener implements Response.Listener<String>
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.DIRECTION_VENT ] , ville.getDirectionVent() );
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.VITESSE_VENT ] , "" + ville.getDirectionVent() );
         values.put( QSLManager.CHAMP_TABLE[ QSLManager.PRESSION_ATMOS ] , ville.getPressionAtmos() );
+        values.put( QSLManager.CHAMP_TABLE[ QSLManager.DATE_DERNIER_RELEVE ] , ville.getDateDerniereMaj() );
         CityView.refMainAct.uapdateBdd( values, ville.getNomVille(), ville.getPays() );
 
 

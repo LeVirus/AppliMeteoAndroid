@@ -11,7 +11,7 @@ public class PreferenceActivity extends AppCompatActivity {
 
     Spinner spinDirVent, spinVitVent, spinTemp;
     Button button;
-    static SharedPreferences sharedPref;
+    SharedPreferences sharedPref;
     SharedPreferences.Editor sharedPrefEditor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
